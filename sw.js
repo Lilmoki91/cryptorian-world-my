@@ -1,4 +1,22 @@
 // ==============================================
+// 🔄 Cryptorian My SERVICE WORKER - VERSI BETUL v3
+// ==============================================
+
+const CACHE_NAME = 'cryptorian-my-cache-v3'; // Tukar version!
+const FILES_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './Luna_Ai.html',  // <-- TAMBAH INI
+  './Luna_Ai2.html',
+  './terminal_verification.html', // <-- TAMBAH JUGA
+  './icon-192.png',
+  './icon-512.png',
+  './icon-192-maskable.png',
+  './icon-512-maskable.png'
+];
+
+// ==============================================
 // 📦 INSTALL - Cache semua fail
 // ==============================================
 self.addEventListener('install', event => {
