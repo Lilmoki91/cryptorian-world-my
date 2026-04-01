@@ -73,9 +73,8 @@ Ini adalah **website ringkas** yang mengandungi:
 ### 🌐 Website Langsung
 Buka URL ini di browser:
 
-
-cryptorian-world.pages.dev/
-
+[cryptorian-world.pages.dev/
+](https://cryptorian-world.pages.dev/)
 
 ### 💬 Guna Luna AI Chatbot
 1. Scroll ke bahagian **Luna Ai chatbot**
