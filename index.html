@@ -26,6 +26,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cryptorian">
+<!-- Force fresh load -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 </head>
 
 
@@ -1215,89 +1219,33 @@ document.getElementById('current-year').textContent = new Date().getFullYear();
 
 // 📌pwa system📌
 // ==============================================
-// 🔄 CRYPTORIAN PWA - AUTO UPDATE + AUTO CLEAR
+// 🚨 FORCE SERVICE WORKER UPDATE
 // ==============================================
-
-(function() {
-  // ==============================================
-  // 📌 VERSION TRACKING - TUKAR BILA UPDATE KOD
-  // ==============================================
-  const APP_VERSION = 'v1.0.1';
-  const STORAGE_KEY = 'cryptorian-version';
+if ('serviceWorker' in navigator) {
+  // Unregister semua SW lama
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => reg.unregister());
+  });
   
-  // ==============================================
-  // 🧹 CLEAR ALL CACHES
-  // ==============================================
-  async function clearAllCaches() {
-    if ('caches' in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(key => {
-        if (key.includes('cryptorian')) {
-          console.log(`🗑️ Deleting cache: ${key}`);
-          return caches.delete(key);
+  // Register SW baru
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => {
+        console.log('✅ SW v2 registered');
+        reg.update();
+        
+        if (reg.waiting) {
+          reg.waiting.postMessage('SKIP_WAITING');
         }
-      }));
-    }
-    localStorage.removeItem('cryptorian-chat-history');
-    sessionStorage.clear();
-  }
+      })
+      .catch(err => console.log('❌ SW failed:', err));
+  });
   
-  // ==============================================
-  // 📌 CHECK VERSION - AUTO CLEAR CACHE
-  // ==============================================
-  const oldVersion = localStorage.getItem(STORAGE_KEY);
-  
-  if (oldVersion !== APP_VERSION) {
-    console.log(`🔄 Version update: ${oldVersion} → ${APP_VERSION}`);
-    localStorage.setItem(STORAGE_KEY, APP_VERSION);
-    clearAllCaches().then(() => {
-      window.location.reload();
-    });
-  }
-  
-  // ==============================================
-  // 📌 REGISTER SERVICE WORKER
-  // ==============================================
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(registration => {
-          console.log('✅ Cryptorian Service Worker registered');
-          registration.update();
-          
-          if (registration.waiting) {
-            registration.waiting.postMessage('SKIP_WAITING');
-          }
-        })
-        .catch(err => {
-          console.log('❌ Service Worker failed:', err);
-        });
-    });
-    
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('⚡ New Service Worker activated');
-      window.location.reload();
-    });
-  }
-  
-  // ==============================================
-  // 🧹 EMERGENCY CLEAR (Guna console)
-  // ==============================================
-  window.clearCryptorianCache = function() {
-    clearAllCaches().then(() => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => {
-          Promise.all(regs.map(reg => reg.unregister())).then(() => {
-            window.location.reload();
-          });
-        });
-      } else {
-        window.location.reload();
-      }
-    });
-  };
-  
-})();
+  // Reload bila SW baru active
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+} 
 
 </script>       
 </body>
