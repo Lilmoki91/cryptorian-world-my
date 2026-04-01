@@ -74,8 +74,7 @@ Ini adalah **website ringkas** yang mengandungi:
 Buka URL ini di browser:
 
 
-https://lilmoki91.github.io/Cryptorian-World-My/
-
+cryptorian-world.pages.dev/
 
 
 ### 💬 Guna Luna AI Chatbot
