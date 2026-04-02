@@ -867,7 +867,7 @@ const consoleMinimizeBtn = document.getElementById('consoleMinimizeBtn');
 const consoleCloseBtn = document.getElementById('consoleCloseBtn');
 const consoleHeader = document.getElementById('consoleHeader');
 
-const CID = "bafkreiaqqve4f4af6tqb7q4b7e7hk4fox4qzce7uqsq65kefmich7jd6hi";
+const CID = "bafkreiaip3eksypvtnuetyp6wtb6us4vdmjr2lg6r46aas6gpuf2f7lzle";
 const GATEWAY = `https://ipfs.io/ipfs/${CID}`;
 
 let loadingInterval;
@@ -1205,8 +1205,8 @@ function saveQRCode() {
         
         // Buat download link
         const link = document.createElement('a');
-        link.href = 'https://raw.githubusercontent.com/Lilmoki91/Azura-Ai-Web-Search/refs/heads/main/Azura%20Ai%20Qr%20code.png';
-        link.download = 'Azura-AI-QR-Code.png';
+        link.href = 'https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/cryptorian-Luna-Ai.png';
+        link.download = 'Cryotorian-Luna-AI-QR-Code.png';
         link.style.display = 'none';
         
         // Download
@@ -1229,7 +1229,7 @@ function saveQRCode() {
         console.log('Save error:', error);
         
         // Fallback: buka di tab baru
-        window.open('https://raw.githubusercontent.com/Lilmoki91/Azura-Ai-Web-Search/refs/heads/main/Azura%20Ai%20Qr%20code.png', '_blank');
+        window.open('https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/cryptorian-Luna-Ai.png', '_blank');
     }
 }
 
@@ -1261,7 +1261,7 @@ function copyCID() {
 function openVerifyTool(toolNum) {
   const tools = [
     `https://check.ipfs.network/#${CID}`,
-    `https://ipfs.io/ipfs/bafkreiaqqve4f4af6tqb7q4b7e7hk4fox4qzce7uqsq65kefmich7jd6hi`,
+    `https://ipfs.io/ipfs/bafkreiaip3eksypvtnuetyp6wtb6us4vdmjr2lg6r46aas6gpuf2f7lzle`,
     `https://explore.ipld.io/#/explore/${CID}`
   ];
   
@@ -1281,7 +1281,7 @@ function downloadData(type) {
       gateway: GATEWAY,
       verified: true,
       timestamp: new Date().toISOString(),
-      platform: "AI Education Platform",
+      platform: "Crypto AI Education Platform",
       metadata_source: "IPFS Network",
       status: "success"
     }, null, 2);
@@ -1456,7 +1456,7 @@ ________________________________
 --------------------------------
  📌 Platform ini merupakan projek it pendidikan dan eksperimen teknologi AI, dibangunkan secara persendirian dan tanpa afiliasi dengan mana-mana institusi rasmi.
 
-################################
+////////////////////////////////
 `;
 
   await typeEffect(terminalEl, msg, 5);
@@ -1552,7 +1552,7 @@ async function processVerification() {
   await loadingDots(">_ Mengambil metadata webhook dari jaringan 🌐 Node IPFS dunia", 3000);
   
   const infoText = `
-#################################
+////////////////////////////////
 
 📦 ID Kandungan (CID): ${CID}
 # ------------------------------
@@ -1696,7 +1696,7 @@ ________________________________
 --------------------------------
  📌 Platform ini merupakan projek it pendidikan dan eksperimen teknologi AI, dibangunkan secara persendirian dan tanpa afiliasi dengan mana-mana institusi rasmi.
 
-################################
+////////////////////////////////
 
 ==> ▶️ Klik butang 'Approve'`;
         currentStep = 2;
