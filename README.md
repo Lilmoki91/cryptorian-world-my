@@ -63,7 +63,7 @@ Ini adalah **website ringkas** yang mengandungi:
 | **Ikon** | [Heroicons](https://heroicons.com) (SVG) |
 | **Markdown Parser** | [Marked.js](https://marked.js.org) |
 | **AI Model** | Google Gemini / Gemma (`gemma-3-27b-it`) |
-| **Hosting** | [GitHub Pages](https://pages.github.com) |
+| **Hosting** | [GitHub Pages](https://pages.github.com)(https://pages.cloudflare.com/) |
 | **Data Panduan** | `markdown.json` dari GitHub RAW |
 
 ---
