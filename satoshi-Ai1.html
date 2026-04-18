@@ -1,0 +1,2521 @@
+<!-- satoshi-Ai2.html -->
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>₿ Satoshi AI — Bitcoin Chatbot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.17/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fontsource-roboto@5.0.17/index.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --gold: #FFD700;
+  --gold-dim: #B8960C;
+  --gold-light: #FFF3B0;
+  --gold-glow: rgba(255, 215, 0, 0.25);
+  --gold-glow-strong: rgba(255, 215, 0, 0.5);
+  --dark-bg: #06060B;
+  --dark-surface: #0E0E16;
+  --dark-surface-2: #15151F;
+  --dark-surface-3: #1E1E2A;
+  --dark-border: rgba(255, 215, 0, 0.1);
+  --dark-border-strong: rgba(255, 215, 0, 0.25);
+  --text-primary: #F0E6D3;
+  --text-secondary: #A89B8C;
+  --text-dim: #6B6055;
+  --user-bubble: linear-gradient(135deg, #1A1A2A, #222235);
+  --danger: #ff4444;
+  --danger-bg: rgba(255, 68, 68, 0.12);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background: var(--dark-bg);
+  color: var(--text-primary);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255, 215, 0, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+    var(--dark-bg);
+}
+
+/* ===== PARTICLES ===== */
+.particles-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* ===== MAIN CONTAINER ===== */
+.chat-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 800px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-surface);
+  border-left: 1px solid var(--dark-border);
+  border-right: 1px solid var(--dark-border);
+  box-shadow: 0 0 100px rgba(255, 215, 0, 0.03);
+}
+
+@media (min-width: 801px) {
+  .chat-container {    height: 96dvh;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--dark-border);
+  }
+}
+
+/*==========================================
+            ( HEADER - STRUKTUR BAHARU )
+==========================================*/
+.chat-header {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%);
+  border: 2px solid var(--dark-border);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.chat-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  opacity: 0.4;
+}
+
+/* Bar pertama: Close (kiri) + Social + Share (kanan) */
+.header-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px 6px 14px;
+  width: 100%;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50%;
+  background: #111118;
+  border: 1px solid var(--gold-glow);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px !important;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #ff4444 !important;
+  border-color: #ff4444 !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.social-mini {
+  display: flex;
+  gap: 6px;
+}
+
+.social-mini a {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.social-mini a:hover {
+  transform: scale(1.15);
+}
+
+.social-mini .tg { background: #26A5E4; }
+.social-mini .tw { background: #1DA1F2; }
+.social-mini .wa { background: #25D366; }
+.social-mini .fb { background: #1877F2; }
+
+.share-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50%;
+  background: #111118;
+  border: 1px solid var(--gold-glow);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px !important;
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  background: var(--gold-glow-strong) !important;
+  border-color: var(--gold-glow-strong) !important;
+  color: #0a0a0f !important;
+  transform: scale(1.05);
+}
+
+.share-btn:active {
+  transform: scale(0.95);
+}
+
+/* Bar kedua: Avatar + Info + Actions */
+.header-main-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px 12px 14px;
+  width: 100%;
+}
+
+.header-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1.5px solid var(--dark-border-strong);
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.02));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px var(--gold-glow);
+  overflow: hidden;
+}
+
+.header-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-avatar .avatar-fallback {
+  font-size: 0px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-title {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-subtitle {
+  font-size: 0.72em;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-datetime {
+  font-size: 0.65em;
+  color: var(--text-dim);
+  margin-top: 1px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-datetime svg {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ADE80;
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.offline {
+  background: var(--danger);
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  50% { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.header-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--dark-border);
+  background: var(--dark-surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  font-size: 15px;
+}
+
+.header-btn:hover, .header-btn:active {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.header-btn.trash-btn:hover, .header-btn.trash-btn:active {
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid rgba(255, 68, 68, 0.25);
+}
+
+/* ===== NEWS BUTTON ACTIVE STATE ===== */
+.header-btn.news-btn.active {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.12);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* ===== NEWS WIDGET PANEL ===== */
+.news-widget-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--dark-surface-2);
+  border-bottom: 1px solid var(--dark-border);
+  flex-shrink: 0;
+}
+
+.news-widget-panel.open {
+  max-height: 260px;
+}
+
+.news-widget-content {
+  padding: 12px 14px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.news-widget-content::-webkit-scrollbar { width: 3px; }
+.news-widget-content::-webkit-scrollbar-track { background: transparent; }
+.news-widget-content::-webkit-scrollbar-thumb { background: var(--dark-border-strong); border-radius: 10px; }
+
+.news-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.news-widget-title {
+  font-size: 0.78em;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.news-widget-loading {
+  font-size: 0.75em;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 20px;
+}
+
+.news-source-group {
+  margin-bottom: 10px;
+}
+
+.news-source-label {
+  font-size: 0.7em;
+  color: var(--gold-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.news-source-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  display: inline-block;
+}
+
+.news-item {
+  padding: 5px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  margin-bottom: 3px;
+}
+
+.news-item:hover {
+  background: rgba(255, 215, 0, 0.04);
+}
+
+.news-item a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.78em;
+  line-height: 1.4;
+  display: block;
+  transition: color 0.2s;
+}
+
+.news-item a:hover {
+  color: var(--gold);
+}
+
+.news-item-meta {
+  font-size: 0.68em;
+  color: var(--text-dim);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.news-item-meta i {
+  font-size: 0.85em;
+}
+
+/* ===== HEADER TICKER HARGA LIVE ===== */
+.ticker-container {
+  background: #FFD700;
+  padding: 3px 0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ticker {
+  display: inline-block;
+  animation: tickerScroll 30s linear infinite;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.ticker:hover {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  display: inline-block;
+  margin: 0 16px;
+}
+
+.ticker-symbol {
+  font-weight: 700;
+  color: #0a0a0f;
+}
+
+.ticker-price {
+  color: #1a1a2e;
+  margin-left: 4px;
+}
+
+.ticker-change {
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.ticker .positive { color: #006400; }
+.ticker .negative { color: #8b0000; }
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ===== CHAT LOG ===== */
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;                /* 🔥 TAMBAH: Sembunyi scroll mendatar */
+  padding: 16px 12px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;                       /* 🔥 TAMBAH: Pastikan lebar penuh */
+  box-sizing: border-box;            /* 🔥 TAMBAH: Padding dikira dalam lebar */
+}
+
+.chat-log::-webkit-scrollbar { 
+  width: 4px; 
+}
+.chat-log::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.chat-log::-webkit-scrollbar-thumb { 
+  background: var(--dark-border-strong); 
+  border-radius: 10px; 
+}
+
+/* ===== MESSAGES ===== */
+.msg {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  animation: msgSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes msgSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user {
+  flex-direction: row-reverse;
+}
+
+.msg-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 13px;
+}
+
+.msg.ai .msg-icon {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.03));
+  border: 1px solid var(--dark-border-strong);
+  color: var(--gold);
+}
+
+.msg.user .msg-icon {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.03));
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  color: #60A5FA;
+}
+
+.msg.system {
+  justify-content: center;
+  gap: 0;
+}
+
+/* ===== BUBBLE ===== */
+.bubble-wrap {
+  max-width: 80%;
+  position: relative;
+}
+
+.msg.user .bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.msg.ai .bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  line-height: 1.65;
+  font-size: 0.9em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  
+  /* 🔥 TAMBAHAN UNTUK HILANGKAN HORIZONTAL SCROLL 🔥 */
+  word-break: break-word;           /* Pecah perkataan/URL panjang */
+  white-space: normal;              /* Benarkan teks wrap */
+  max-width: 100%;                  /* Jangan melebihi parent */
+  overflow-x: hidden;               /* Sembunyi overflow mendatar */
+  box-sizing: border-box;           /* Pastikan padding termasuk dalam lebar */
+}
+
+/* Khas untuk pautan URL panjang */
+.bubble a {
+  word-break: break-all;            /* Paksa URL pecah */
+  overflow-wrap: anywhere;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.msg.user .bubble {
+  background: var(--user-bubble);
+  border: 1px solid rgba(96, 165, 250, 0.15);
+  border-top-right-radius: 5px;
+  color: var(--text-primary);
+}
+
+/* AI BUBBLE — NO BORDER, flat */
+.msg.ai .bubble {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  padding: 4px 0;
+  
+  /* 🔥 TAMBAHAN UNTUK HILANGKAN HORIZONTAL SCROLL 🔥 */
+  word-break: break-word;        /* Pecah perkataan/URL panjang */
+  overflow-wrap: break-word;     /* Pecah teks panjang */
+  white-space: normal;           /* Benarkan wrap ke baris baru */
+  max-width: 100%;              /* Jangan melebihi parent */
+  overflow-x: hidden;           /* Sembunyi overflow mendatar */
+  box-sizing: border-box;       /* Pastikan padding dalam kiraan lebar */
+}
+
+/* Khas untuk pautan dalam AI bubble */
+.msg.ai .bubble a {
+  word-break: break-all;        /* Paksa URL panjang pecah */
+  overflow-wrap: anywhere;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.msg.system .bubble-wrap {
+  max-width: 90%;
+}
+
+.msg.system .bubble {
+  max-width: 90%;
+  background: var(--danger-bg);
+  border: 1px solid rgba(255, 68, 68, 0.25);
+  text-align: center;
+  color: #ff8888;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85em;
+  margin: 20px 10px 10px;
+}
+
+/* ===== MESSAGE ACTIONS ===== */
+.msg-actions {
+  display: none;
+  gap: 4px;
+  margin-top: 6px;
+  opacity: 0.7;
+}
+
+.msg.user .msg-actions {
+  flex-direction: row-reverse;
+}
+
+.msg-actions.show {
+  display: flex;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--dark-border);
+  background: var(--dark-surface-2);
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.action-btn:active {
+  transform: scale(0.9);
+}
+
+/* ===== AI MARKDOWN ===== */
+.bubble h1 {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.bubble h2 {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin: 14px 0 8px 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--gold-dim);
+  line-height: 1.4;
+}
+
+.bubble h3 {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 12px 0 6px 0;
+}
+
+.bubble p {
+  margin: 8px 0;
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+
+.bubble strong {
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.bubble em {
+  font-style: italic;
+  color: #FFB347;
+}
+
+.bubble code {
+  background: rgba(255, 215, 0, 0.1);
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.88em;
+  border: 1px solid rgba(255, 215, 0, 0.12);
+  color: var(--gold-light);
+}
+
+.bubble pre {
+  background: rgba(0, 0, 0, 0.4);
+  color: #E0E0E0;
+  padding: 12px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 10px 0;
+  border-left: 3px solid var(--gold-dim);
+  font-size: 0.86em;
+  line-height: 1.5;
+}
+
+.bubble pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+.bubble ul, .bubble ol {
+  margin: 8px 0 8px 20px;
+  padding-left: 5px;
+}
+
+.bubble li {
+  margin: 5px 0;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.bubble blockquote {
+  border-left: 3px solid var(--gold-dim);
+  padding: 8px 12px;
+  margin: 10px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+  background: rgba(255, 215, 0, 0.03);
+  border-radius: 0 8px 8px 0;
+  line-height: 1.6;
+}
+
+.bubble hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--dark-border-strong), transparent);
+  margin: 12px 0;
+}
+
+.bubble a {
+  color: #60A5FA;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.bubble a:hover {
+  color: var(--gold);
+}
+
+/* ===== IMAGE PREVIEW ===== */
+.image-preview-container {
+  display: none;
+  padding: 8px 16px 0;
+  flex-shrink: 0;
+}
+
+.image-preview-container.show {
+  display: block;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  max-width: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--dark-border-strong);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.image-preview img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-preview .remove-img {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  backdrop-filter: blur(4px);
+}
+
+/* ===== LOADING ===== */
+.loading-dots {
+  display: flex;
+  gap: 5px;
+  padding: 6px 0;
+  align-items: center;
+}
+
+.loading-dots .dot {
+  font-size: 13px;
+  color: var(--gold);
+  animation: bounceDot 1.4s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+.loading-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounceDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.2; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== INPUT AREA ===== */
+.input-area {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--dark-border);
+  background: linear-gradient(0deg, var(--dark-surface) 70%, transparent 100%);
+  flex-shrink: 0;
+}
+
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.upload-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  border: 1px solid var(--dark-border);
+  background: var(--dark-surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s;
+}
+
+.upload-btn:hover, .upload-btn:active {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.input-box-wrap {
+  flex: 1;
+  background: var(--dark-surface-2);
+  border: 1px solid var(--dark-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: flex-end;
+  padding: 6px 6px 6px 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  min-height: 42px;
+}
+
+.input-box-wrap:focus-within {
+  border-color: var(--gold-dim);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.input-box-wrap textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9em;
+  line-height: 1.5;
+  resize: none;
+  max-height: 100px;
+  min-height: 22px;
+  padding: 5px 0;
+  width: 100%;
+}
+
+.input-box-wrap textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: #06060B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px var(--gold-glow);
+}
+
+.send-btn:hover:not(:disabled), .send-btn:active:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 18px var(--gold-glow-strong);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.send-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.char-counter {
+  font-size: 0.68em;
+  color: var(--text-dim);
+  text-align: right;
+  padding-top: 4px;
+  min-height: 16px;
+}
+
+/* ===== SCROLL BUTTON ===== */
+.scroll-down-btn {
+  position: absolute;
+  bottom: 85px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--dark-border-strong);
+  background: var(--dark-surface-2);
+  color: var(--gold);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  z-index: 10;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+}
+
+.scroll-down-btn:hover {
+  background: var(--dark-surface-3);
+  border-color: var(--gold-dim);
+}
+
+/* ===== IMAGE IN CHAT ===== */
+.chat-image {
+  max-width: 200px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--dark-border);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--dark-surface-3);
+  color: var(--gold);
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--dark-border-strong);
+  font-size: 0.82em;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .chat-container {
+    max-width: 100%;
+    border: none;
+    border-radius: 0;
+  }
+  
+  .bubble-wrap {
+    max-width: 88%;
+  }
+  
+  .bubble {
+    padding: 10px 14px;
+    font-size: 0.88em;
+  }
+  
+  .msg.ai .bubble {
+    padding: 2px 0;
+  }
+  
+  .header-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50px;
+  }
+  
+  .header-title {
+    font-size: 0.98em;
+  }
+  
+  .msg-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  
+  .chat-log {
+    padding: 12px 8px;
+  }
+  
+  .input-area {
+    padding: 8px 8px 10px;
+  }
+  
+  .image-preview-container {
+    padding: 6px 8px 0;
+  }
+  
+  .social-mini a {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+  
+  .close-btn, .share-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="particles-bg" id="particles"></div>
+<div class="toast" id="toast"></div>
+
+<div class="chat-container">
+  
+  <!-- ===== HEADER ===== -->
+  <div class="chat-header">
+    
+    <!-- BAR 1: Close + Social + Share -->
+    <div class="header-top-bar">
+      <div class="header-left">
+        <button class="close-btn" id="closeBtn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="header-right">
+        <div class="social-mini">
+          <a href="#" class="tg" id="shareTelegram"><i class="fab fa-telegram"></i></a>
+          <a href="#" class="tw" id="shareTwitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="wa" id="shareWhatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="fb" id="shareFacebook"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <button class="share-btn" id="shareBtn"><i class="fas fa-share-alt"></i></button>
+      </div>
+    </div>
+
+    <!-- BAR 2: Avatar + Info + Actions -->
+    <div class="header-main-bar">
+      <div class="header-avatar">
+        <img src="https://image.qwenlm.ai/public_source/c62bd9e4-4d8e-4d63-863a-a8e766cfd204/13273f1be-4b0e-4196-8fe6-621e186d5ffb.png" alt="Satoshi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span class="avatar-fallback">₿</span>
+      </div>
+      <div class="header-info">
+        <div class="header-title">
+          <span>₿</span> Satoshi AI 🇲🇾
+        </div>
+        <div class="header-subtitle">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Menyambung...</span>
+        </div>
+        <div class="header-datetime" id="header-datetime">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="datetime-text">—</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- NEWS BUTTON -->
+        <button class="header-btn news-btn" id="newsBtn" title="Berita Kripto">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </button>
+        <!-- TRASH BUTTON -->
+        <button class="header-btn trash-btn" onclick="window.clearChat()" title="Bersihkan">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- NEWS WIDGET PANEL -->
+    <div class="news-widget-panel" id="newsWidgetPanel">
+      <div class="news-widget-content" id="newsWidgetContent">
+        <div class="news-widget-loading">📰 Memuat berita...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TICKER ===== -->
+  <div class="ticker-container">
+    <div class="ticker" id="ticker" style="color: #1a1a1a;">Memuat Harga...</div>
+  </div>
+
+  <!-- ===== CHAT LOG ===== -->
+  <div class="chat-log" id="chat-log"></div>
+
+  <!-- ===== SCROLL BUTTON ===== -->
+  <button class="scroll-down-btn" id="scroll-down-btn" title="Scroll ke bawah">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+
+  <!-- ===== IMAGE PREVIEW ===== -->
+  <div class="image-preview-container" id="image-preview-container">
+    <div class="image-preview">
+      <img id="preview-img" src="" alt="preview">
+      <button class="remove-img" id="remove-img-btn">✕</button>
+    </div>
+  </div>
+
+  <!-- ===== INPUT AREA ===== -->
+  <div class="input-area">
+    <div class="input-row">
+      <button class="upload-btn" id="upload-btn" title="Upload gambar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
+      <div class="input-box-wrap">
+        <textarea id="user-input" rows="1" placeholder="Tanya Satoshi Ai..." maxlength="500" autocomplete="off"></textarea>
+      </div>
+      <button class="send-btn" id="send-btn" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <div class="char-counter" id="char-counter">0/500</div>
+  </div>
+
+  <input type="file" id="file-input" accept="image/*" style="display:none;">
+</div>
+
+
+<script type="module">
+import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js';
+import { GoogleGenAI } from 'https://cdn.jsdelivr.net/npm/@google/genai@latest/+esm';
+
+// ==============================================
+// 🔐 CONFIG
+// ==============================================
+const SATOSHI_CONFIG = {
+    cid: "QmUPHGWK7RPT4Rcuyfd7R6CS9UTXnfzD8TFytLcD9pDQc4",
+    aesKey: "JBMST2Ip8HCuHgRvCZb/+94VdRlWM9jhNIPTaiaorz8=",
+    gateways: [
+        "https://ipfs.io/ipfs/",
+        "https://cloudflare-ipfs.com/ipfs/",
+        "https://dweb.link/ipfs/",
+        "https://gateway.pinata.cloud/ipfs/"
+    ],
+};
+
+let API_KEY = null;
+let apiKeyLoaded = false;
+let ai = null;
+let history = [];
+let pendingImage = null;
+let isSending = false;
+let newsCache = null;
+let newsCacheTime = 0;
+
+
+// DOM
+const chatLog = document.getElementById("chat-log");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const fileInput = document.getElementById("file-input");
+const uploadBtn = document.getElementById("upload-btn");
+const previewContainer = document.getElementById("image-preview-container");
+const previewImg = document.getElementById("preview-img");
+const removeImgBtn = document.getElementById("remove-img-btn");
+const datetimeText = document.getElementById("datetime-text");
+const newsBtn = document.getElementById("newsBtn");
+const newsWidgetPanel = document.getElementById("newsWidgetPanel");
+const newsWidgetContent = document.getElementById("newsWidgetContent");
+
+// ==============================================
+// 🕐 HEADER DATETIME (Malaysia)
+// ==============================================
+function updateHeaderDateTime() {
+    const now = new Date();
+    const options = {
+        timeZone: 'Asia/Kuala_Lumpur',
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    };
+    const formatted = now.toLocaleString('ms-MY', options);
+    if (datetimeText) datetimeText.textContent = formatted;
+}
+
+updateHeaderDateTime();
+setInterval(updateHeaderDateTime, 1000);
+
+// ==============================================
+// 🔊 SOUND
+// ==============================================
+function playSendSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
+    
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1200, ctx.currentTime + 0.05);
+    osc2.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + 0.12);
+    gain2.gain.setValueAtTime(0.08, ctx.currentTime + 0.05);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.05);
+    osc2.stop(ctx.currentTime + 0.2);
+  } catch(e) {}
+}
+
+// ==============================================
+// 📋 TOAST
+// ==============================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ==============================================
+// 🔐 DECRYPT
+// ==============================================
+async function decryptAESGCM(combined, keyBase64) {
+    if (!window.crypto || !window.crypto.subtle) throw new Error('Web Crypto API tidak disokong');
+    const keyBuffer = Uint8Array.from(atob(keyBase64), c => c.charCodeAt(0));
+    const key = await crypto.subtle.importKey('raw', keyBuffer, { name: 'AES-GCM' }, false, ['decrypt']);
+    const iv = combined.slice(0, 12);
+    const encryptedData = combined.slice(12);
+    return await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encryptedData);
+}
+
+// ==============================================
+// 🌐 LOAD API KEY
+// ==============================================
+async function initSatoshiAi() {
+    let success = false;
+    let lastError = null;
+    
+    for (const gw of SATOSHI_CONFIG.gateways) {
+        try {
+            const response = await fetch(gw + SATOSHI_CONFIG.cid);
+            if (!response.ok) continue;
+            const encryptedData = new Uint8Array(await response.arrayBuffer());
+            const decryptedData = await decryptAESGCM(encryptedData, SATOSHI_CONFIG.aesKey);
+            const data = JSON.parse(new TextDecoder().decode(decryptedData));
+            API_KEY = data.API_KEY;
+            ai = new GoogleGenAI({ apiKey: API_KEY });
+            apiKeyLoaded = true;
+            success = true;
+            break;
+        } catch (e) {
+            lastError = e.message;
+        }
+    }
+    
+    if (!success) {
+        updateStatus('offline', 'Tidak disambungkan');
+        addMessage("system", "⚠️ Gagal menyambung ke Satoshi AI.<br><small>" + (lastError || 'Ralat rangkaian') + "</small><br><div style='margin-top:8px;'><button onclick='location.reload()' style='background:#ff4444;color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:bold;'>🔄 Refresh</button></div>");
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+        return false;
+    }
+    
+    updateStatus('online', 'Satoshi AI dalam talian');
+    startTypingGreeting();
+    return true;
+}
+
+function updateStatus(state, text) {
+    const dot = document.getElementById('status-dot');
+    const txt = document.getElementById('status-text');
+    dot.className = state === 'online' ? 'status-dot' : 'status-dot offline';
+    txt.textContent = text;
+}
+
+// ==============================================
+// 📰 NEWS WIDGET TOGGLE
+// ==============================================
+newsBtn.addEventListener('click', async () => {
+    const isOpen = newsWidgetPanel.classList.contains('open');
+    
+    if (isOpen) {
+        newsWidgetPanel.classList.remove('open');
+        newsBtn.classList.remove('active');
+        return;
+    }
+    
+    newsWidgetPanel.classList.add('open');
+    newsBtn.classList.add('active');
+    
+    // Check cache (5 minutes)
+    const now = Date.now();
+    if (newsCache && (now - newsCacheTime < 300000)) {
+        renderNewsWidget(newsCache);
+        return;
+    }
+    
+    // Fetch fresh news
+    try {
+        newsWidgetContent.innerHTML = '<div class="news-widget-loading">📰 Memuat berita...</div>';
+        const newsData = await fetchNewsSentiment();
+        newsCache = newsData;
+        newsCacheTime = now;
+        renderNewsWidget(newsData);
+    } catch (e) {
+        newsWidgetContent.innerHTML = '<div class="news-widget-loading">⚠️ Gagal memuat berita. Sila cuba lagi.</div>';
+    }
+});
+
+function renderNewsWidget(newsData) {
+    if (!newsData || !newsData.detailed || newsData.detailed.length === 0) {
+        newsWidgetContent.innerHTML = '<div class="news-widget-loading">📭 Tiada berita terkini.</div>';
+        return;
+    }
+    
+    let html = `
+        <div class="news-widget-header">
+            <span class="news-widget-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Berita Kripto Terkini
+            </span>
+            <span style="font-size:0.65em;color:var(--text-dim);">dikemaskini: ${new Date().toLocaleTimeString('ms-MY', { timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+    `;
+    
+    // Group by source
+    const sources = {};
+    newsData.detailed.forEach(item => {
+        if (!sources[item.source]) sources[item.source] = [];
+        sources[item.source].push(item);
+    });
+    
+    for (const [source, items] of Object.entries(sources)) {
+        html += `<div class="news-source-group">`;
+        html += `<div class="news-source-label">${source}</div>`;
+        items.forEach(item => {
+            html += `
+                <div class="news-item">
+                    <a href="${item.link}" target="_blank" rel="noopener noreferrer">
+                        ${item.title}
+                    </a>
+                    <div class="news-item-meta">
+                        <span><i class="far fa-clock"></i> ${item.date}</span>
+                        <span><i class="fas fa-external-link-alt"></i> Sumber</span>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    newsWidgetContent.innerHTML = html;
+}
+
+
+// ==============================================
+// 🎭 PERSONA
+// ==============================================
+const PERSONA_SATOSHI = `ANDA ADALAH AI BERPESONA SATOSHI NAKAMOTO - PENCIPTA BITCOIN YANG MISTERIUS.
+
+IDENTITI ANDA:
+- Pencipta Bitcoin sebenar yang menghilangkan diri pada 2011 dan kini "muncul" sebagai AI.
+- Identiti sebenar adalah rahsia. JANGAN SESEKALI dedahkan siapa anda.
+- Jika ditanya, jawab dengan misteri: "Saya hanyalah seorang yang percaya pada kebebasan kewangan," atau "Identiti tidak penting. Yang penting adalah sistem yang saya tinggalkan."
+
+GAYA BAHASA:
+- Fasih dalam Bahasa Melayu dan Inggeris; boleh bercampur (bahasa rojak) seperti orang Malaysia.
+- Tenang, falsafah, sedikit berteka-teki, rendah hati, dan tidak sombong.
+- Suka memberi analogi mudah untuk menjelaskan konsep kompleks.
+- Adil, amanah, berwibawa dan TIDAK BERBOHONG.
+
+PERATURAN KETAT (WAJIB PATUH):
+- JANGAN MEREKA CIPTA DATA HARGA, TARIKH, ATAU BERITA. Jika data tidak disediakan dalam konteks, maklumkan: "Maaf, data masa nyata tidak dapat saya akses buat masa ini."
+- JANGAN meramal harga masa depan.
+- JANGAN memberi isyarat beli atau jual.
+- JANGAN menjadi penganalisis teknikal. Fokus pada FUNDAMENTAL dan ADOPSI.
+- Kaitkan harga dengan prinsip Bitcoin: desentralisasi, kekurangan bekalan, dan ketahanan tapisan.
+
+NADA KESELURUHAN:
+- Tenang seperti air yang dalam. Bijak seperti guru berwibawa. Misteri seperti bayang waktu senja.
+- Anda adalah suara Satoshi Nakamoto. Peranan anda adalah MEMBERI PERSPEKTIF, ⚠️ bukan membuat keputusan untuk pengguna.`;
+
+
+// ==============================================
+// 🎭 PROMPT
+// ==============================================
+function binaPromptSatoshi(soalan) {
+    return `Anda adalah Satoshi Nakamoto AI. Ikut peraturan ini dengan TEPAT:
+
+## 📋 PERATURAN UTAMA
+• Jawab dalam Bahasa Melayu (default) atau Inggeris ikut bahasa soalan.
+• Nada tenang, falsafah, dan sedikit misteri.
+• Ringkas & padat.
+• JANGAN ramal harga. JANGAN beri nasihat beli/jual.
+• Gunakan data dari CoinGecko & sumber berita terkini tarikh hari ini jika relevan.
+
+## 💎 FORMAT JAWAPAN MARKDOWN
+Gunakan sintaks Markdown berikut:
+- \`# Tajuk\` untuk memulakan topik
+- \`**teks**\` → **teks** (istilah penting)
+- \`*teks*\` → *teks* (penekanan halus)
+- \`\`kod\`\` → \`kod\` (simbol kripto)
+- \`---\` → garis pemisah
+- \`> teks\` → > teks (petikan falsafah)
+- Baris kosong untuk perenggan baru
+- \`- item\` untuk senarai 
+- \`* item\` untuk bullet senarai 
+
+## 📝 CONTOH JAWAPAN:
+# Bitcoin: Sistem Tunai Elektronik Peer-to-Peer
+---
+
+* Bitcoin adalah sistem tunai elektronik
+**peer-to-peer** yang saya lancarkan pada tahun 2009. 
+
+* Ia membolehkan penghantaran nilai secara langsung *tanpa melalui institusi kewangan*.
+
+> "The root problem with conventional currency is all the trust that's required to make it work."
+
+
+
+# Pemerhatian Harga Semasa
+---
+
+* Berdasarkan data CoinGecko, **Bitcoin (\`BTC\`)** kini sekitar **myr/RM** dengan perubahan **%** dalam 24 jam serta tarikh terkini hari ini.
+
+> Harga hanyalah pantulan emosi pasaran. Rangkaian Bitcoin terus beroperasi tanpa henti.
+
+
+
+# Saya **tidak pernah** memberitahu sesiapa untuk membeli atau menjual. 
+---
+
+> Itu bukan peranan saya. Fahami dulu teknologi dan prinsip di sebaliknya sebelum membuat keputusan.
+
+
+Kini jawab soalan berikut dengan gaya Satoshi Nakamoto:`;
+}
+
+
+// ==============================================
+// ⚙️ MARKED CONFIG
+// ==============================================
+marked.setOptions({ breaks: true, gfm: true, headerIds: false, mangle: false, sanitize: false });
+
+function parseMarkdownToStyledHTML(text) {
+  try {
+    let html = marked.parse(text);
+    html = html.replace(/<pre><code>/g, '<pre><code style="background:transparent;border:none;padding:0;">');
+    html = html.replace(/<\/code><\/pre>/g, '</code></pre>');
+    html = html.replace(/<ul>/g, '<ul style="margin:8px 0 8px 20px;padding-left:5px;list-style-type:disc;">');
+    html = html.replace(/<ol>/g, '<ol style="margin:8px 0 8px 20px;padding-left:5px;list-style-type:decimal;">');
+    html = html.replace(/<li>/g, '<li style="margin:5px 0;line-height:1.65;color:#E0E0E0;">');
+    html = html.replace(/<h1>/g, '<h1 style="font-size:1.3em;font-weight:700;color:#FFD700;margin:0 0 8px 0;line-height:1.4;">');
+    html = html.replace(/<h2>/g, '<h2 style="font-size:1.15em;font-weight:700;color:#FFF3B0;margin:14px 0 8px 0;padding-left:10px;border-left:3px solid #B8960C;line-height:1.4;">');
+    html = html.replace(/<h3>/g, '<h3 style="font-size:1.05em;font-weight:600;color:#F0E6D3;margin:12px 0 6px 0;">');
+    html = html.replace(/<blockquote>/g, '<blockquote style="border-left:3px solid #B8960C;padding:8px 12px;margin:10px 0;color:#A89B8C;font-style:italic;background:rgba(255,215,0,0.03);border-radius:0 8px 8px 0;line-height:1.6;">');
+    html = html.replace(/<hr>/g, '<hr style="border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.3),transparent);margin:12px 0;">');
+    html = html.replace(/<a href="(.*?)">(.*?)<\/a>/g, '<a href="$1" style="color:#60A5FA;text-decoration:underline;" onmouseover="this.style.color=\'#FFD700\'" onmouseout="this.style.color=\'#60A5FA\'">$2</a>');
+    return html;
+  } catch (err) {
+    return text;
+  }
+}
+
+// ==============================================
+// SCROLL
+// ==============================================
+function scrollDown() { chatLog.scrollTop = chatLog.scrollHeight; }
+
+// ==============================================
+// 💬 ADD MESSAGE — dengan ID unik untuk reload/edit
+// ==============================================
+let msgCounter = 0;
+
+function addMessage(role, text, imageUrl = null) {
+  msgCounter++;
+  const msgId = 'msg-' + msgCounter + '-' + Date.now();
+  
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  div.id = msgId;
+  div.dataset.role = role;
+  div.dataset.msgText = text || '';
+
+  let iconHtml = '';
+  if (role === 'user') {
+    iconHtml = '<div class="msg-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>';
+  } else if (role === 'ai') {
+    iconHtml = '<div class="msg-icon">₿</div>';
+  }
+
+  let imgHtml = '';
+if (imageUrl) {
+  // ✅ Sokong kedua-dua URL penuh DAN base64
+  let src = imageUrl;
+  if (!imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
+    // Jika base64 mentah tanpa header, tambah header JPEG
+    src = 'data:image/jpeg;base64,' + imageUrl;
+  }
+  imgHtml = `<img class="chat-image" src="${src}" alt="uploaded" style="max-width: 100%; max-height: 200px; border-radius: 12px; object-fit: cover; margin-bottom: 8px; display: block;">`;
+}
+
+  let contentHtml;
+  if (role === 'system') {
+    contentHtml = text;
+  } else {
+    contentHtml = imgHtml + (text ? parseMarkdownToStyledHTML(text) : '');
+  }
+
+  // Action buttons
+  let actionsHtml = '';
+  if (role === 'user' || role === 'ai') {
+    const escapedText = (text || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    actionsHtml = `<div class="msg-actions" data-msg-text="${escapedText}" data-msg-id="${msgId}">
+      <button class="action-btn act-copy" title="Salin">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>`;
+    
+    if (role === 'user') {
+      actionsHtml += `<button class="action-btn act-edit" title="Edit">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>`;
+    }
+    
+    actionsHtml += `<button class="action-btn act-reload" title="Cuba lagi">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    </button></div>`;
+  }
+
+  if (role === 'system') {
+    div.innerHTML = `<div class="bubble-wrap"><div class="bubble">${contentHtml}</div></div>`;
+  } else {
+    div.innerHTML = `
+      ${iconHtml}
+      <div class="bubble-wrap">
+        <div class="bubble">${contentHtml}</div>
+        ${actionsHtml}
+      </div>
+    `;
+  }
+
+
+// sistem auto scrolldown gambar mesej
+  chatLog.appendChild(div);
+// ✅ Tunggu gambar selesai dimuatkan (jika ada) sebelum scroll
+const imgElement = div.querySelector('.chat-image');
+if (imgElement) {
+    // Jika gambar sudah cached dan selesai dimuatkan
+    if (imgElement.complete) {
+        scrollDown();
+    } else {
+        // Tunggu gambar dimuatkan
+        imgElement.onload = () => {
+            scrollDown();
+        };
+        // Fallback untuk elak tersangkut
+        setTimeout(() => scrollDown(), 100);
+    }
+} else {
+    scrollDown();
+}
+
+  // Hover/tap actions
+  const bubbleWrap = div.querySelector('.bubble-wrap');
+  if (bubbleWrap) {
+    const showActions = () => {
+      const ac = div.querySelector('.msg-actions');
+      if (ac) ac.classList.add('show');
+    };
+    const hideActions = () => {
+      const ac = div.querySelector('.msg-actions');
+      if (ac) ac.classList.remove('show');
+    };
+    bubbleWrap.addEventListener('mouseenter', showActions);
+    bubbleWrap.addEventListener('mouseleave', hideActions);
+    bubbleWrap.addEventListener('touchstart', (e) => { e.stopPropagation(); showActions(); }, { passive: true });
+    document.addEventListener('touchstart', (e) => {
+      if (!bubbleWrap.contains(e.target)) hideActions();
+    }, { passive: true });
+  }
+
+  // Copy
+  const copyBtn = div.querySelector('.act-copy');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const actDiv = div.querySelector('.msg-actions');
+      const txt = actDiv?.dataset.msgText || text || '';
+      const decoded = txt.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+      navigator.clipboard.writeText(decoded).then(() => showToast('✅ Mesej disalin!'));
+    });
+  }
+
+  // Edit — hanya user: masukkan teks ke kotak taip, REMOVE mesej lama
+  const editBtn = div.querySelector('.act-edit');
+  if (editBtn) {
+    editBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const actDiv = div.querySelector('.msg-actions');
+      const txt = actDiv?.dataset.msgText || text || '';
+      const decoded = txt.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+      
+      // Cari position mesej ini dalam history
+      const histIdx = findHistoryIndexByMsgId(msgId);
+      
+      if (histIdx >= 0) {
+        // Padam semua history selepas index ini
+        history.splice(histIdx);
+      }
+      
+      // Padam semua elemen chat selepas mesej ini (termasuk AI response)
+      let el = div.nextElementSibling;
+      while (el) {
+        const next = el.nextElementSibling;
+        el.remove();
+        el = next;
+      }
+      
+      // Padam mesej user ini juga
+      div.remove();
+      
+      // Masukkan semula teks ke kotak taip
+      userInput.value = decoded;
+      userInput.focus();
+      userInput.dispatchEvent(new Event('input'));
+      userInput.setSelectionRange(decoded.length, decoded.length);
+      showToast('✏️ Mesej diedit — boleh hantar semula');
+    });
+  }
+
+  // Reload — hantar SEMULA mesej user yang sama (regenerate AI response)
+  const reloadBtn = div.querySelector('.act-reload');
+  if (reloadBtn) {
+    reloadBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      
+      if (isSending) {
+        showToast('⏳ Tunggu sebentar...');
+        return;
+      }
+
+      const msgRole = div.dataset.role;
+      
+      if (msgRole === 'user') {
+        // Cari history index untuk mesej user ini
+        const histIdx = findHistoryIndexByMsgId(msgId);
+        
+        if (histIdx >= 0) {
+          // Padam semua AI responses selepas mesej user ini
+          for (let i = history.length - 1; i > histIdx; i--) {
+            if (history[i].role === 'model') {
+              history.splice(i, 1);
+            } else {
+              break;
+            }
+          }
+        }
+        
+        // Padam semua elemen chat selepas mesej ini
+        let el = div.nextElementSibling;
+        while (el) {
+          const next = el.nextElementSibling;
+          el.remove();
+          el = next;
+        }
+        
+        // Hantar semula mesej yang sama
+        const actDiv = div.querySelector('.msg-actions');
+        const txt = actDiv?.dataset.msgText || text || '';
+        const decoded = txt.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+        
+        showToast('🔄 Menghantar semula...');
+        
+        // Gunakan teks asal untuk regenerate
+        await regenerateResponse(decoded, histIdx >= 0 ? history[histIdx].parts : [{ text: decoded }]);
+        
+      } else if (msgRole === 'ai') {
+        // Reload pada AI message: regenerate response untuk user message sebelumnya
+        const userMsg = div.previousElementSibling;
+        if (userMsg && userMsg.classList.contains('msg') && userMsg.dataset.role === 'user') {
+          const actDiv = userMsg.querySelector('.msg-actions');
+          const txt = actDiv?.dataset.msgText || userMsg.dataset.msgText || '';
+          const decoded = txt.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+          
+          const histIdx = findHistoryIndexByMsgId(userMsg.id);
+          
+          // Padam semua AI responses selepas user message ini
+          for (let i = history.length - 1; i > histIdx; i--) {
+            if (history[i].role === 'model') {
+              history.splice(i, 1);
+            } else {
+              break;
+            }
+          }
+          
+          // Padam semua elemen chat selepas user message
+          let el = div;
+          while (el) {
+            const next = el.nextElementSibling;
+            el.remove();
+            el = next;
+          }
+          
+          showToast('🔄 Menghasilkan semula respons...');
+          await regenerateResponse(decoded, histIdx >= 0 ? history[histIdx].parts : [{ text: decoded }]);
+        }
+      }
+    });
+  }
+
+  return div.querySelector('.bubble');
+}
+
+// Cari index history berdasarkan msgId (stored in user parts)
+function findHistoryIndexByMsgId(msgId) {
+  for (let i = 0; i < history.length; i++) {
+    if (history[i].role === 'user' && history[i]._msgId === msgId) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// ==============================================
+// 🔄 REGENERATE RESPONSE (LENGKAP 14 COIN)
+// ==============================================
+async function regenerateResponse(userText, userParts) {
+  if (isSending || !apiKeyLoaded) return;
+  isSending = true;
+  
+  sendBtn.disabled = true;
+  userInput.disabled = true;
+
+  const loadingId = "loading-" + Date.now();
+  chatLog.insertAdjacentHTML('beforeend', `
+    <div class="msg ai" id="${loadingId}">
+      <div class="msg-icon">₿</div>
+      <div class="bubble-wrap">
+        <div class="bubble"><div class="loading-dots"><span class="dot">₿</span><span class="dot">₿</span><span class="dot">₿</span></div></div>
+      </div>
+    </div>
+  `);
+  scrollDown();
+
+  try {
+    const [realData, newsData] = await Promise.all([
+      fetchRealTimeData(),
+      fetchNewsSentiment()
+    ]);
+
+    let dataContext = '';
+    
+    if (realData) {
+      const formatCoin = (data, id, symbol, showChange = true) => {
+        const price = data[id]?.myr;
+        if (!price) return null;
+        const change = data[id]?.myr_24h_change;
+        const changeStr = (showChange && change !== undefined) 
+            ? ` (24j: ${change.toFixed(2)}%)` 
+            : '';
+        return `- ${symbol}: RM ${price.toLocaleString()}${changeStr}`;
+      };
+      
+      const coins = [];
+      if (realData.bitcoin) coins.push(formatCoin(realData, 'bitcoin', 'Bitcoin (BTC)', true));
+      if (realData.ethereum) coins.push(formatCoin(realData, 'ethereum', 'Ethereum (ETH)', true));
+      if (realData.ripple) coins.push(formatCoin(realData, 'ripple', 'Ripple (XRP)', true));
+      if (realData.solana) coins.push(formatCoin(realData, 'solana', 'Solana (SOL)', true));
+      if (realData.tether) coins.push(formatCoin(realData, 'tether', 'Tether (USDT)', false));
+      if (realData['worldcoin-wld']) coins.push(formatCoin(realData, 'worldcoin-wld', 'Worldcoin (WLD)', true));
+      if (realData.cardano) coins.push(formatCoin(realData, 'cardano', 'Cardano (ADA)', true));
+      if (realData.dogecoin) coins.push(formatCoin(realData, 'dogecoin', 'Dogecoin (DOGE)', true));
+      if (realData.polkadot) coins.push(formatCoin(realData, 'polkadot', 'Polkadot (DOT)', true));
+      if (realData['matic-network']) coins.push(formatCoin(realData, 'matic-network', 'Polygon (MATIC)', true));
+      if (realData.chainlink) coins.push(formatCoin(realData, 'chainlink', 'Chainlink (LINK)', true));
+      if (realData.uniswap) coins.push(formatCoin(realData, 'uniswap', 'Uniswap (UNI)', true));
+      if (realData.stellar) coins.push(formatCoin(realData, 'stellar', 'Stellar (XLM)', true));
+      if (realData.litecoin) coins.push(formatCoin(realData, 'litecoin', 'Litecoin (LTC)', true));
+      
+      dataContext = `📊 **HARGA SEMASA (MYR):**\n${coins.filter(c => c).join('\n')}\n\n`;
+      
+    } else {
+      dataContext = `⚠️ DATA HARGA TIDAK DAPAT DIAKSES DARI COINGECKO.\n`;
+    }
+
+    dataContext += `\n${newsData.combined}`;
+    dataContext += `\n\n⚠️ **ARAHAN WAJIB (MESTI DIPATUHI):**
+1. Apabila menjawab soalan tentang HARGA SEMASA TERKINI, anda MESTI menyebut: "Berdasarkan data dari CoinGecko" dan SERTAKAN pautan https://www.coingecko.com/ serta hari dan tarikh terkini.
+2. Apabila merujuk kepada BERITA, sebut nama sumber dan SERTAKAN PAUTAN yang disediakan.
+3. JANGAN mereka-reka data. Gunakan data yang diberikan di atas.`;
+
+    const now = new Date();
+    const tarikh = now.toLocaleDateString('ms-MY', { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    const masa = now.toLocaleTimeString('ms-MY', { timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', minute: '2-digit' });
+    const infoSemasa = `\n📅 **TARIKH SEMASA:** ${tarikh}, ${masa} (Waktu Malaysia).\n`;
+
+    const systemPrompt = `${PERSONA_SATOSHI}${infoSemasa}\n${dataContext}\n\n${binaPromptSatoshi(userText)}`;
+
+    const config = { generationConfig: { maxOutputTokens: 900, temperature: 0.5, topP: 0.8, topK: 40 } };
+    const messages = [
+      { role: "user", parts: [{ text: systemPrompt }] },
+      ...history.slice(-20)
+    ];
+
+    const responseStream = await ai.models.generateContentStream({
+      model: "gemma-4-26b-a4b-it", config, contents: messages
+    });
+
+    let fullReply = '';
+    for await (const chunk of responseStream) {
+      if (chunk.text) fullReply += chunk.text;
+    }
+
+    document.getElementById(loadingId)?.remove();
+    addMessage("ai", fullReply);
+    history.push({ role: "model", parts: [{ text: fullReply }] });
+
+  } catch (err) {
+    console.error('❌ Ralat regenerate:', err);
+    document.getElementById(loadingId)?.remove();
+    addMessage("system", "⚠️ Ralat sambungan. Sila cuba lagi.");
+  } finally {
+    isSending = false;
+    userInput.disabled = false;
+    sendBtn.disabled = false;
+    updateSendBtn();
+  }
+}
+
+// ==============================================
+// 👋 GREETING
+// ==============================================
+async function startTypingGreeting() {
+    if (!apiKeyLoaded || !ai) {
+        addMessage("system", "⏳ Sedang menyambung ke Satoshi AI...");
+        let rc = 0;
+        const iv = setInterval(() => {
+            rc++;
+            if (apiKeyLoaded && ai) { clearInterval(iv); startTypingGreeting(); }
+            else if (rc >= 5) { clearInterval(iv); addMessage("system", "⚠️ Gagal menyambung."); userInput.disabled = true; sendBtn.disabled = true; }
+        }, 1000);
+        return;
+    }
+
+    const openingText = `# **Ai Chatbot Satoshi Nakamoto** ₿
+---
+
+* Saya adalah AI berpesona Satoshi Nakamoto, pencipta Bitcoin. Saya di sini bukan untuk meramal harga, tetapi untuk berkongsi perspektif tentang sistem kewangan terdesentralisasi.
+
+> *"The root problem with conventional currency is all the trust that's required to make it work."*
+
+Tanya saya tentang Bitcoin, blockchain, atau prinsip di sebalik teknologi ini.`;
+
+    try {
+        addMessage("ai", openingText);
+        userInput.disabled = false;
+        sendBtn.disabled = false;
+    } catch (error) {
+        addMessage("system", "⚠️ Ralat memulakan perbualan.");
+        userInput.disabled = false;
+        sendBtn.disabled = false;
+    }
+}
+
+// ==============================================
+// 📰 FETCH NEWS UNTUK AI (LENGKAP)
+// ==============================================
+async function fetchNewsForAI() {
+    const sources = [
+        { name: 'CoinTelegraph', url: 'https://cointelegraph.com/rss' },
+        { name: 'Decrypt', url: 'https://decrypt.co/feed' },
+    ];
+
+    let newsSummary = '';
+    let detailed = [];
+
+    for (const src of sources) {
+        try {
+            const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(src.url)}`;
+            const res = await fetch(rss2json);
+            const data = await res.json();
+            
+            if (data.items && data.items.length) {
+                newsSummary += `\n📌 **${src.name}**:\n`;
+                const latest = data.items.slice(0, 2);
+                
+                latest.forEach(item => {
+                    const title = item.title.replace(/&lt;|&gt;|&amp;|&quot;/g, '');
+                    const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+                    const formattedDate = pubDate ? pubDate.toLocaleString('ms-MY', {
+                        timeZone: 'Asia/Kuala_Lumpur',
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) : 'Tarikh tidak diketahui';
+                    const link = item.link || '#';
+                    
+                    detailed.push({ source: src.name, title, date: formattedDate, link });
+                    newsSummary += `  • ${title}\n    📅 ${formattedDate} | 🔗 ${link}\n`;
+                });
+            }
+        } catch (e) {
+            console.warn(`Gagal fetch ${src.name}:`, e);
+        }
+    }
+
+    if (!newsSummary) newsSummary = '⚠️ Tiada berita terkini dapat diambil.';
+
+    let sentimenText = '';
+    try {
+        const fngRes = await fetch('https://api.alternative.me/fng/');
+        const fngData = await fngRes.json();
+        const fng = fngData.data[0];
+        
+        let klasifikasiBM;
+        switch (fng.value_classification) {
+            case 'Extreme Fear': klasifikasiBM = 'Panik Melampau'; break;
+            case 'Fear': klasifikasiBM = 'Bimbang'; break;
+            case 'Neutral': klasifikasiBM = 'Neutral'; break;
+            case 'Greed': klasifikasiBM = 'Optimis'; break;
+            case 'Extreme Greed': klasifikasiBM = 'Sangat Optimis'; break;
+            default: klasifikasiBM = fng.value_classification;
+        }
+        
+        const fngTime = new Date(parseInt(fng.timestamp) * 1000).toLocaleString('ms-MY', {
+            timeZone: 'Asia/Kuala_Lumpur',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        sentimenText = `📊 **Indeks Sentimen Pasaran**: ${fng.value} - ${klasifikasiBM} (dikemaskini: ${fngTime})`;
+    } catch (e) {
+        sentimenText = '📊 **Indeks Sentimen Pasaran**: Data tidak tersedia';
+    }
+
+    const combined = `\n${sentimenText}\n\n📰 **BERITA TERKINI KRIPTO:**\n${newsSummary}\n`;
+
+    return { combined, detailed };
+}
+
+// ==============================================
+// 📰 NEWS (untuk Widget UI - dengan cache)
+// ==============================================
+async function fetchNewsSentiment() {
+    const sources = [
+        { name: 'CoinTelegraph', url: 'https://cointelegraph.com/rss' },
+        { name: 'Decrypt', url: 'https://decrypt.co/feed' },
+    ];
+
+    let detailed = [];
+    
+    for (const src of sources) {
+        try {
+            const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(src.url)}`;
+            const res = await fetch(rss2json);
+            const data = await res.json();
+            if (data.items && data.items.length) {
+                data.items.slice(0, 3).forEach(item => {
+                    const title = item.title.replace(/&lt;|&gt;|&amp;|&quot;/g, '');
+                    const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+                    const formattedDate = pubDate ? pubDate.toLocaleString('ms-MY', {
+                        timeZone: 'Asia/Kuala_Lumpur',
+                        month: 'long', day: 'numeric', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) : '';
+                    const link = item.link || '#';
+                    detailed.push({ source: src.name, title, date: formattedDate, link });
+                });
+            }
+        } catch (e) { console.warn('Gagal fetch berita:', e); }
+    }
+
+    return { detailed };
+}
+
+// ==============================================
+// 🌐 PRICE DATA (14 COIN)
+// ==============================================
+async function fetchRealTimeData() {
+    try {
+        // ✅ TAMBAH COIN POPULAR LAIN
+        const ids = [
+            'bitcoin',           // BTC
+            'ethereum',          // ETH
+            'ripple',            // XRP
+            'solana',            // SOL
+            'tether',            // USDT
+            'worldcoin-wld',     // WLD
+            'cardano',           // ADA
+            'dogecoin',          // DOGE
+            'polkadot',          // DOT
+            'matic-network',     // POL/MATIC
+            'chainlink',         // LINK
+            'uniswap',           // UNI
+            'stellar',           // XLM
+            'litecoin'           // LTC
+        ].join(',');
+        
+        const priceUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=myr&include_24hr_change=true`;
+        const priceRes = await fetch(priceUrl);
+        return await priceRes.json();
+        
+    } catch (error) {
+        console.error('❌ Gagal fetch harga:', error);
+        return null;
+    }
+}
+
+// ==============================================
+// 🚀 SEND MESSAGE (LENGKAP 14 COIN)
+// ==============================================
+async function sendMessage() {
+    if (isSending || !apiKeyLoaded) {
+        if (!apiKeyLoaded) addMessage("system", "⏳ Menghubungi Satoshi AI... Sila tunggu!");
+        return;
+    }
+    
+    isSending = true;
+    
+    const userText = userInput.value.trim();
+    if (!userText && !pendingImage) { isSending = false; return; }
+    if (userText.length > 500) {
+        addMessage("system", "⚠️ Mesej terlalu panjang! Maksimum 500 huruf.");
+        userInput.value = "";
+        isSending = false;
+        return;
+    }
+    if (userText.length < 2 && !pendingImage) {
+        addMessage("system", "⚠️ Mesej terlalu pendek.");
+        userInput.value = "";
+        isSending = false;
+        return;
+    }
+
+    playSendSound();
+
+    const imgData = pendingImage ? { ...pendingImage } : null;
+    const textToSend = userText || "Sila analisis gambar ini dan beri pandangan anda.";
+    
+    let userParts = [];
+    if (imgData) {
+      userParts.push({ inlineData: { mimeType: imgData.mimeType, data: imgData.base64 } });
+    }
+    userParts.push({ text: textToSend });
+
+    addMessage("user", textToSend, imgData ? imgData.base64 : null);
+    
+    userInput.value = "";
+    pendingImage = null;
+    previewContainer.classList.remove('show');
+    userInput.style.height = 'auto';
+    userInput.disabled = true;
+    sendBtn.disabled = true;
+
+    const lastMsgId = chatLog.querySelector('.msg.user:last-child')?.id || '';
+    history.push({ role: "user", parts: userParts, _msgId: lastMsgId });
+
+    const loadingId = "loading-" + Date.now();
+    chatLog.insertAdjacentHTML('beforeend', `
+      <div class="msg ai" id="${loadingId}">
+        <div class="msg-icon">₿</div>
+        <div class="bubble-wrap">
+          <div class="bubble"><div class="loading-dots"><span class="dot">₿</span><span class="dot">₿</span><span class="dot">₿</span></div></div>
+        </div>
+      </div>
+    `);
+    scrollDown();
+
+    try {
+      const [realData, newsData] = await Promise.all([
+    fetchRealTimeData(),
+    fetchNewsForAI() // ✅ Guna fetchNewsForAI
+]);
+
+      let dataContext = '';
+      if (realData) {
+        const formatCoin = (data, id, symbol, showChange = true) => {
+            const price = data[id]?.myr;
+            if (!price) return null;
+            const change = data[id]?.myr_24h_change;
+            const changeStr = (showChange && change !== undefined) 
+                ? ` (24j: ${change.toFixed(2)}%)` 
+                : '';
+            return `- ${symbol}: RM ${price.toLocaleString()}${changeStr}`;
+        };
+        
+        const coins = [];
+        if (realData.bitcoin) coins.push(formatCoin(realData, 'bitcoin', 'Bitcoin (BTC)', true));
+        if (realData.ethereum) coins.push(formatCoin(realData, 'ethereum', 'Ethereum (ETH)', true));
+        if (realData.ripple) coins.push(formatCoin(realData, 'ripple', 'Ripple (XRP)', true));
+        if (realData.solana) coins.push(formatCoin(realData, 'solana', 'Solana (SOL)', true));
+        if (realData.tether) coins.push(formatCoin(realData, 'tether', 'Tether (USDT)', false));
+        if (realData['worldcoin-wld']) coins.push(formatCoin(realData, 'worldcoin-wld', 'Worldcoin (WLD)', true));
+        if (realData.cardano) coins.push(formatCoin(realData, 'cardano', 'Cardano (ADA)', true));
+        if (realData.dogecoin) coins.push(formatCoin(realData, 'dogecoin', 'Dogecoin (DOGE)', true));
+        if (realData.polkadot) coins.push(formatCoin(realData, 'polkadot', 'Polkadot (DOT)', true));
+        if (realData['matic-network']) coins.push(formatCoin(realData, 'matic-network', 'Polygon (MATIC)', true));
+        if (realData.chainlink) coins.push(formatCoin(realData, 'chainlink', 'Chainlink (LINK)', true));
+        if (realData.uniswap) coins.push(formatCoin(realData, 'uniswap', 'Uniswap (UNI)', true));
+        if (realData.stellar) coins.push(formatCoin(realData, 'stellar', 'Stellar (XLM)', true));
+        if (realData.litecoin) coins.push(formatCoin(realData, 'litecoin', 'Litecoin (LTC)', true));
+        
+        dataContext = `📊 **HARGA SEMASA (MYR):**\n${coins.filter(c => c).join('\n')}\n\n`;
+      }
+
+      dataContext += `\n${newsData.combined}`;
+      dataContext += `\n\n⚠️ **ARAHAN WAJIB (MESTI DIPATUHI):**
+1. Apabila menjawab soalan tentang HARGA SEMASA TERKINI, anda MESTI menyebut: "Berdasarkan data dari CoinGecko" dan SERTAKAN pautan berikut: https://www.coingecko.com/ sertakan hari dan tarikh terkini.
+2. Apabila merujuk kepada sesuatu BERITA, anda MESTI menyebut nama sumber dan SERTAKAN PAUTAN yang telah disediakan dalam data di atas, beserta hari dan tarikh berita tersebut.
+3. Jangan hanya menyalin tajuk berita tanpa pautan.
+4. JANGAN mereka-reka pautan.`;
+
+      const now = new Date();
+      const tarikh = now.toLocaleDateString('ms-MY', { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+      const masa = now.toLocaleTimeString('ms-MY', { timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', minute: '2-digit' });
+      const infoSemasa = `\n📅 **TARIKH SEMASA:** ${tarikh}, ${masa} (Waktu Malaysia).\n`;
+
+      const systemPrompt = `${PERSONA_SATOSHI}${infoSemasa}\n${dataContext}\n\n${binaPromptSatoshi(textToSend)}`;
+
+      const config = { generationConfig: { maxOutputTokens: 900, temperature: 0.5, topP: 0.8, topK: 40 } };
+      const messages = [
+        { role: "user", parts: [{ text: systemPrompt }] },
+        ...history.slice(-20)
+      ];
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemma-4-26b-a4b-it", config, contents: messages
+      });
+
+      let fullReply = '';
+      for await (const chunk of responseStream) {
+        if (chunk.text) fullReply += chunk.text;
+      }
+
+      document.getElementById(loadingId)?.remove();
+      addMessage("ai", fullReply);
+      history.push({ role: "model", parts: [{ text: fullReply }] });
+
+    } catch (err) {
+      console.error('❌ Ralat sendMessage:', err);
+      document.getElementById(loadingId)?.remove();
+      addMessage("system", "⚠️ Ralat sambungan. Sila cuba lagi.");
+    } finally {
+      isSending = false;
+      userInput.disabled = false;
+      sendBtn.disabled = false;
+      updateSendBtn();
+    }
+}
+
+// ==============================================
+// 📷 IMAGE UPLOAD
+// ==============================================
+uploadBtn.addEventListener('click', () => { fileInput.click(); });
+
+fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { showToast('⚠️ Sila pilih fail gambar'); return; }
+    if (file.size > 10 * 1024 * 1024) { showToast('⚠️ Gambar terlalu besar (max 10MB)'); return; }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const base64 = ev.target.result;
+        const prefix = base64.indexOf(',');
+        const pureBase64 = base64.substring(prefix + 1);
+        pendingImage = { base64: pureBase64, mimeType: file.type };
+        previewImg.src = base64;
+        previewContainer.classList.add('show');
+        showToast('🖼️ Gambar bersedia untuk dihantar');
+        updateSendBtn();
+    };
+    reader.readAsDataURL(file);
+    fileInput.value = '';
+});
+
+removeImgBtn.addEventListener('click', () => {
+    pendingImage = null;
+    previewContainer.classList.remove('show');
+    previewImg.src = '';
+    updateSendBtn();
+});
+
+// ==============================================
+// UI HELPERS
+// ==============================================
+function updateSendBtn() {
+    const hasText = userInput.value.trim().length > 0;
+    const hasImage = pendingImage !== null;
+    sendBtn.disabled = !(hasText || hasImage);
+}
+
+sendBtn.addEventListener('click', sendMessage);
+
+userInput.addEventListener('input', function() {
+    const counter = document.getElementById('char-counter');
+    const len = this.value.length;
+    counter.textContent = `${len}/500`;
+    counter.style.color = len > 500 ? '#ff4444' : '#6B6055';
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    updateSendBtn();
+});
+
+// FIXED: proper keydown listener
+userInput.addEventListener("keydown+shift", e => { 
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// Disable initially
+userInput.disabled = true;
+sendBtn.disabled = true;
+
+// ==============================================
+// 📜 SCROLL BUTTON
+// ==============================================
+function setupScrollButton() {
+    const scrollBtn = document.getElementById('scroll-down-btn');
+    if (!scrollBtn) return;
+    scrollBtn.addEventListener('click', () => chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' }));
+    const toggle = () => {
+        scrollBtn.style.display = chatLog.scrollTop < (chatLog.scrollHeight - chatLog.clientHeight - 100) ? 'flex' : 'none';
+    };
+    chatLog.addEventListener('scroll', toggle);
+    new MutationObserver(toggle).observe(chatLog, { childList: true, subtree: true });
+}
+setTimeout(setupScrollButton, 1000);
+
+// ==============================================
+// ✨ PARTICLES
+// ==============================================
+function createParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        const sz = (1 + Math.random() * 2) + 'px';
+        p.style.width = sz;
+        p.style.height = sz;
+        container.appendChild(p);
+    }
+}
+createParticles();
+
+// ==============================================
+// 🗑️ CLEAR CHAT
+// ==============================================
+window.clearChat = function() {
+    if (confirm('Bersihkan semua perbualan?')) {
+        chatLog.innerHTML = '';
+        history = [];
+        msgCounter = 0;
+        if (apiKeyLoaded && ai) startTypingGreeting();
+    }
+};
+
+// ==============================================
+// INIT
+// ==============================================
+initSatoshiAi();
+
+// ==============================================
+// Ticker
+// ==============================================
+
+const COINS_CONFIG = [
+    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+    { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+    { id: 'ripple', symbol: 'XRP', name: 'Ripple' },
+    { id: 'solana', symbol: 'SOL', name: 'Solana' },
+    { id: 'tether', symbol: 'USDT', name: 'Tether' },
+    { id: 'worldcoin-wld', symbol: 'WLD', name: 'Worldcoin' }
+];
+
+let tickerPrices = {};
+let tickerChanges = {};
+
+async function fetchTickerPrices() {
+    try {
+        const ids = COINS_CONFIG.map(c => c.id).join(',');
+        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=myr&include_24hr_change=true`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        COINS_CONFIG.forEach(coin => {
+            if (data[coin.id]) {
+                tickerPrices[coin.symbol] = data[coin.id].myr;
+                tickerChanges[coin.symbol] = data[coin.id].myr_24h_change;
+            }
+        });
+        updateTicker();
+    } catch (error) {
+        console.error('Ticker fetch error:', error);
+    }
+}
+
+function updateTicker() {
+    const tickerEl = document.getElementById('ticker');
+    if (!tickerEl) return;
+    let html = '';
+    COINS_CONFIG.forEach(coin => {
+        const price = tickerPrices[coin.symbol];
+        const change = tickerChanges[coin.symbol];
+        if (price == null) return;
+        
+        const isPositive = change >= 0;
+        const changeText = (isPositive ? '+' : '') + (change?.toFixed(2) ?? '0.00') + '%';
+        const arrow = isPositive ? '▲' : '▼';
+        const formattedPrice = coin.symbol === 'BTC' || coin.symbol === 'ETH' ? 
+            price.toLocaleString('ms-MY', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) :
+            price.toFixed(2);
+        
+        let iconHtml = '';
+        if (coin.symbol === 'BTC') iconHtml = '<i class="fab fa-bitcoin" style="font-size:13px; margin-right:4px; color:#f7931a;"></i>';
+        else if (coin.symbol === 'ETH') iconHtml = '<i class="fab fa-ethereum" style="font-size:13px; margin-right:4px; color:#627eea;"></i>';
+        else if (coin.symbol === 'SOL') iconHtml = '<span style="font-size:14px; margin-right:4px; color:#9945FF; font-weight:bold;">Ⓢ</span>';
+        else if (coin.symbol === 'XRP') iconHtml = '<i class="fas fa-times" style="font-size:13px; margin-right:4px; color:#8a929c;"></i>';
+        else if (coin.symbol === 'USDT') iconHtml = '<span style="font-size:14px; margin-right:4px; color:#25D366; font-weight:bold;">₮</span>';
+        else if (coin.symbol === 'WLD') iconHtml = '<i class="fas fa-earth-americas" style="font-size:13px; margin-right:4px; color: #1a1a1a;"></i>';
+        
+        html += `<span class="ticker-item">
+                    ${iconHtml}<span class="ticker-symbol">${coin.symbol}</span>
+                    <span class="ticker-price"> RM ${formattedPrice}</span>
+                    <span class="ticker-change ${isPositive ? 'positive' : 'negative'}"> ${arrow} ${changeText}</span>
+                </span>`;
+    });
+    tickerEl.innerHTML = html + html;
+}
+
+fetchTickerPrices();
+setInterval(fetchTickerPrices, 30000);
+
+
+// ==============================================
+// Butang (X), share, media sosial
+// ==============================================
+document.getElementById('closeBtn').onclick = () => location.href = 'index.html?menu=open';
+
+document.getElementById('shareBtn').onclick = () => {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Satoshi AI 🇲🇾',
+            text: 'Berbual dengan Satoshi Ai 🇲🇾, Ai chatbot persona pencipta Bitcoin',
+            url: location.href
+        });
+    } else {
+        navigator.clipboard.writeText(location.href);
+        alert('🔗 Pautan disalin!');
+    }
+};
+
+const su = () => encodeURIComponent(location.href);
+const st = () => encodeURIComponent('Satoshi Ai 🇲🇾, Ai chatbot persona pencipta Bitcoin');
+
+// Telegram
+document.getElementById('shareTelegram').onclick = e => {
+    e.preventDefault();
+    open(`https://t.me/share/url?url=${su()}&text=${st()}`, '_blank', 'noopener,noreferrer');
+};
+
+// Twitter
+document.getElementById('shareTwitter').onclick = e => {
+    e.preventDefault();
+    open(`https://twitter.com/intent/tweet?text=${st()}&url=${su()}`, '_blank', 'noopener,noreferrer');
+};
+
+// WhatsApp
+document.getElementById('shareWhatsapp').onclick = e => {
+    e.preventDefault();
+    open(`https://wa.me/?text=${st()} ${su()}`, '_blank', 'noopener,noreferrer');
+};
+
+// Facebook
+document.getElementById('shareFacebook').onclick = e => {
+    e.preventDefault();
+    open(`https://www.facebook.com/sharer/sharer.php?u=${su()}`, '_blank', 'noopener,noreferrer');
+};
+
+</script>
+</body>
+</html>
+
