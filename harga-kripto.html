@@ -10,6 +10,19 @@
     <link href="https://cdn.fontsource.com/css/space-grotesk@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.fontsource.com/css/jetbrains-mono@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.fontsource.com/css/inter@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- 📌PWA Meta Tags📌 -->
+   <link rel="manifest" href="manifest.json">
+   <meta name="theme-color" content="#00ED64">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <meta name="apple-mobile-web-app-title" content="Cryptorian">
+
+   <!-- Force fresh load -->
+   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+   <meta http-equiv="Pragma" content="no-cache">
+   <meta http-equiv="Expires" content="0">
+
     <style>
         /* ============================================
            CSS RESET & VARIABLES
@@ -2228,6 +2241,35 @@ document.getElementById('shareFacebook').addEventListener('click', function(e) {
     window.open(url, '_blank', 'noopener,noreferrer');
 });
 
+// ==============================================
+// 📌pwa system📌
+// 🚨 FORCE SERVICE WORKER UPDATE
+// ==============================================
+if ('serviceWorker' in navigator) {
+  // Unregister semua SW lama
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => reg.unregister());
+  });
+
+  // Register SW baru
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => {
+        console.log('✅ SW v2 registered');
+        reg.update();
+
+        if (reg.waiting) {
+          reg.waiting.postMessage('SKIP_WAITING');
+        }
+      })
+      .catch(err => console.log('❌ SW failed:', err));
+  });
+
+  // Reload bila SW baru active
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+} 
     
 </script>
 </body>
