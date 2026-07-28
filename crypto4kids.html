@@ -1,0 +1,1376 @@
+<!--- crypto4kids.html --->
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bantuan Kripto Kanak-Kanak Sedunia</title>
+
+<!--library css dan font teks-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+     
+     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+     
+     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- ===== OPEN GRAPH / SOCIAL SHARE CARD ===== -->
+    <meta property="og:title" content="Sumbangan Kripto untuk Masa Depan Anak-Anak Sedunia" />
+    <meta property="og:description" content="Bantu kanak-kanak di seluruh dunia melalui derma kripto terus ke UNICEF. Telus, selamat & pantas!" />
+
+    <meta property="og:image" content="https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/images/crypto4kids-webp.webp" />
+    <meta property="og:url" content="https://cryptorian-world.pages.dev/" />
+
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sumbangan Kripto untuk Masa Depan Anak-Anak Sedunia" />
+    <meta name="twitter:description" content="Bantu kanak-kanak melalui derma kripto terus ke UNICEF." />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/images/crypto4kids-webp.webp" />
+
+<!-- ===== PWA META TAGS (Lengkap) ===== -->
+<!-- 1. MANIFEST -->
+<link rel="manifest" href="manifest.json">
+
+<!-- 2. THEME COLOR -->
+<meta name="theme-color" content="#1e3a5f">
+
+<!-- 3. APPLE iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cryptorian">
+
+<!-- 4. WINDOWS / DESKTOP -->
+<meta name="msapplication-TileColor" content="#00ED64">
+<meta name="msapplication-TileImage" content="/images/icon-144.png">
+
+<!-- 5. ANDROID CHROME -->
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/images/icon-512.png">
+
+<!-- 6. APPLE TOUCH ICON -->
+<link rel="apple-touch-icon" href="/images/icon-192.png">
+
+<!-- 7. FAVICON -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<!-- 8. START URL (untuk PWA) -->
+<meta name="start-url" content="/">
+
+<!-- 9. VIEWPORT (penting untuk mobile) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<!-- 10. FORCE FRESH LOAD -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+    <style>
+        :root {
+            --gold-glow: rgba(96, 165, 250, 0.4);
+            --text-secondary: #94a3b8;
+        }
+
+        * { margin:0; padding: 0; box-sizing: border-box;}
+
+        body {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-style: bold;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0a1929 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            color: #e2e8f0;
+        }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 5.6rem 1rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ==================== HEADER TOP BAR ==================== */
+        .chat-header {
+            width: 100%;
+            position: fixed;
+            z-index: 100;
+            
+        }
+
+        .header-top-bar {
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn, .share-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--gold-glow);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .share-btn:hover {
+            background: #06b6d4;
+            border-color: #06b6d4;
+            color: black;
+            transform: scale(1.05);
+        }
+
+        .social-mini {
+            display: flex;
+            gap: 8px;
+        }
+
+        .social-mini button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.social-mini button:hover { transform: scale(1.15); }
+.social-mini .tg { background: #26A5E4; }
+.social-mini .tw { background: #1DA1F2; }
+.social-mini .wa { background: #25D366; }
+.social-mini .fb { background: #1877F2; }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            cursor: pointer;
+        }
+
+        .nav-logo i {
+            font-size: 2.5rem;
+            color: hotpink;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #60a5fa;
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover { color: #f1f5f9; }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* ==================== HERO ==================== */
+        .hero {
+            text-align: center;
+            padding: 2rem 1rem 3rem;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(96, 165, 250, 0.12);
+            color: #93c5fd;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            animation: pulse-glow-badge 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.3); }
+            50% { box-shadow: 0 0 25px 8px rgba(96, 165, 250, 0.15); }
+        }
+
+        .hero-badge i {
+            color: #34d399;
+            font-size: 0.6rem;
+        }
+
+        /* HERO IMAGE BANNER */
+        .hero-image-wrapper {
+            max-width: 750px;
+            margin: 0 auto 2rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(96, 165, 250, 0.2);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .hero-image {
+            margin: 0 auto 0 !important;
+            width: 100%;
+            height: 100% !important;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .hero-image-wrapper:hover .hero-image {
+            transform: scale(1.03);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #f1f5f9;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        h1 .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(96, 165, 250, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ==================== STATS ==================== */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.2rem 2rem;
+            text-align: center;
+            transition: all 0.4s;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-6px);
+            border-color: rgba(96, 165, 250, 0.5);
+            box-shadow: 0 15px 40px rgba(96, 165, 250, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+
+        /* ==================== GRID KAD & GAMBAR BADAN AMAL ==================== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 180px;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.08);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(96, 165, 250, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            color: #f1f5f9;
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(96, 165, 250, 0.15);
+            color: #93c5fd;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            align-self: flex-start;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+
+        .card .crypto-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .card .crypto-tags span {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.3rem 0.7rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card .btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .card .btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* ==================== HOW IT WORKS ==================== */
+        .how-it-works {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .step-card:hover {
+            border-color: rgba(96, 165, 250, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-number {
+            width: 45px;
+            height: 45px;
+            background: rgba(96, 165, 250, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem !important;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #34d399;
+        }
+
+        .step-card h4 {
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .step-card p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* ==================== TESTIMONIAL ==================== */
+        /*SECTION HEADERS*/
+        .section-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .testimonial-section {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .testimonial {
+            background: rgba(255, 105, 180, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 105, 180, 0.35);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .testimonial .quote-icon {
+            font-size: 3rem;
+            color: hotpink; /*#a78bfa;*/
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .testimonial q {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            font-style: italic;
+            line-height: 1.7;
+        }
+
+        .testimonial .author {
+            margin-top: 1.5rem;
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .testimonial .author span {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        /* ==================== FAQ ==================== */
+        .faq-section {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .faq-item.active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+            color: #94a3b8;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+            color: #60a5fa;
+        }
+
+        .faq-answer {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            margin-top: 0.8rem;
+            max-height: 200px;
+        }
+
+        /* ==================== FOOTER NOTE & FOOTER ==================== */
+        .footer-note {
+            background: rgba(251, 191, 36, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem 1.8rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            margin-top: 2rem;
+        }
+
+        .footer-note .warning-icon { font-size: 1.8rem; color: #fbbf24; flex-shrink: 0; }
+        .footer-note strong { color: #fbbf24; }
+
+        .main-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .main-footer p { color: #64748b; font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .main-footer a { color: #93c5fd; text-decoration: none; }
+
+        /* PAGE VIEWS */
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: pageFadeIn 0.4s ease-out; }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-back {
+            position: fixed;
+            top: 65px;
+            left: 20px;
+            z-index: 999;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(15px);
+            color: #f1f5f9;
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            padding: 0.55rem 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-back.visible { display: flex; }
+
+        .page-header { text-align: center; padding: 1rem 1rem 2rem; }
+        .page-header h2 { font-size: 2rem; color: #f1f5f9; font-weight: 700; margin-bottom: 0.6rem; }
+        .page-header p { color: #94a3b8; font-size: 1rem; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .hero-image { height: 220px; }
+            .navbar { flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .stats-bar { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BAR 1: Top Bar (Close, Social, Share) -->
+<div class="chat-header">
+    <div class="header-top-bar">
+        <div class="header-left">
+            <button class="close-btn" id="closeBtn" onclick="goHome()" title="Halaman Utama">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="header-right">
+            <div class="social-mini">
+                <button class="tg" onclick="shareToSocial('telegram')" title="Kongsi ke Telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                </button>
+                <button class="tw" onclick="shareToSocial('twitter')" title="Kongsi ke Twitter">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="wa" onclick="shareToSocial('whatsapp')" title="Kongsi ke WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="fb" onclick="shareToSocial('facebook')" title="Kongsi ke Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+            </div>
+            <button class="share-btn" id="shareBtn" onclick="shareNative()" title="Kongsi Pautan">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        </div></div></div>
+    
+
+
+    <canvas id="three-canvas"></canvas>
+    <div class="bg-glow"></div>
+
+    <!-- BUTANG BACK MOBILE -->
+    <button class="btn-back" id="btnBack" onclick="goHome()">
+        <i class="fas fa-arrow-left"></i> Kembali
+    </button>
+
+    <div class="container">
+        <!-- ==================== NAVBAR ==================== -->
+        <nav class="navbar" id="navbar">
+            <div class="nav-logo" onclick="goHome()">
+                <i class="fas fa-hand-holding-heart" ></i>
+                <span><b style= "font-family: 'Pacifico', cursive; font-style: italic; font-size: 26px; color: hotpink">Crypto4Kids</b></span>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('page-badan-amal')"><i class="fas fa-building-columns"></i> Badan Amal</a></li>
+                <li><a onclick="showPage('page-cara-kerja')"><i class="fas fa-circle-question"></i> Cara Kerja</a></li>
+                <li><a onclick="showPage('page-soalan-lazim')"><i class="fas fa-comments"></i> Soalan Lazim</a></li>
+            </ul>
+            <a class="nav-cta" onclick="showPage('page-badan-amal')"><i class="fas fa-coins"></i> Derma Sekarang</a>
+        </nav>
+
+        <!-- ==================== PAGE: HOME ==================== -->
+        <div class="page-view active" id="page-home">
+            <!-- HERO -->
+            <section class="hero" id="heroSection">
+                <div class="hero-badge">
+                    <i class="fas fa-circle"></i>
+                    <span>Disokong oleh teknologi blockchain yang telus</span>
+                </div>
+                
+                <!-- GAMBAR VISUAL UTAMA HERO -->
+                <div class="hero-image-wrapper">
+                    <img src="https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/images/crypto4kids-webp.webp" 
+                         alt="Kanak-kanak tersenyum gembira" 
+                         class="hero-image" />
+                </div>
+
+                <h1>
+                    Sumbangan Kripto untuk<br>
+                    <span class="gradient-text">Masa Depan Anak-Anak Sedunia</span>
+                </h1>
+                <p class="hero-desc">
+                    Bantu kanak-kanak di seluruh dunia melalui derma mata wang kripto yang 
+                    <strong>telus, selamat & pantas</strong>. Setiap transaksi direkodkan di 
+                    blockchain — anda boleh melihat impak sebenar sumbangan anda.
+                </p>
+                <div class="hero-buttons">
+                    <a class="btn-primary" onclick="showPage('page-badan-amal')">
+                        <i class="fas fa-heart"></i> Mula Menderma
+                    </a>
+                    <a class="btn-secondary" onclick="showPage('page-cara-kerja')">
+                        <i class="fas fa-circle-info"></i> Ketahui Lebih Lanjut
+                    </a>
+                </div>
+            </section>
+
+            <!-- STATS -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="3">0</div>
+                    <div class="stat-label"><i class="fas fa-building-columns"></i> Organisasi Rasmi</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="6">0</div>
+                    <div class="stat-label"><i class="fab fa-bitcoin"></i> Kripto Diterima</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="100">0</div>
+                    <div class="stat-label"><i class="fas fa-shield-halved"></i> % Telus</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="2019">0</div>
+                    <div class="stat-label"><i class="fas fa-calendar-check"></i> Sejak Tahun</div>
+                </div>
+            </div>
+
+            <!-- FOOTER NOTE -->
+            <div class="footer-note" id="footerNote">
+                <div class="warning-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <div>
+                    <strong>⚠️ Nota Keselamatan Penting:</strong> Hanya gunakan pautan dari laman rasmi. 
+                    IMF <u>tidak</u> menguruskan sebarang derma kripto. Semak alamat dompet di portal 
+                    masing-masing sebelum membuat sebarang transaksi.
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="main-footer" id="mainFooter">
+                <p>🛡️ <strong>Crypto4Kids</strong> — Platform maklumat derma kripto untuk badan amal kanak-kanak</p>
+                <p>Kami <u>tidak</u> menguruskan dana. Semua derma pergi terus ke organisasi yang disenaraikan.</p>
+                <p style="margin-top:0.8rem; font-size:0.75rem;">
+                    Dibina dengan ❤️ untuk ketelusan | 
+                    <a href="https://www.unicefventurefund.org/crypto-funding" target="_blank" rel="noopener noreferrer">Sumber: UNICEF Venture Fund</a>
+                </p>
+                <p style="font-size:0.7rem; margin-top:0.5rem; color:#475569;">
+                    "Who am I? I am Johannes Hadamard (MACGYVER CODERMAN), a solo little dev who cares about humanity's kids worldwide via this little digital system of mine ✨ 🌍."   </p>
+               <p style="font-size:0.7rem; margin-top:0.5rem; color:#475569;">Digital Bio Signature (SHA-256):
+c23d51d66289315e048749156ea84de3bc9281af4faa9941afd7525864eef5e5
+
+               </p>
+               <p style="font-size:0.7rem; margin-top:0.5rem; color:#475569;">
+                    &copy; 2026 Crypto4Kids. Semua hak cipta terpelihara. Maklumat adalah untuk rujukan sahaja.
+                </p>
+
+            </footer>
+        </div>
+
+        <!-- ==================== PAGE: BADAN AMAL ==================== -->
+        <div class="page-view" id="page-badan-amal">
+            <div class="page-header">
+                <h2><i class="fas fa-building-columns" style="color:#60a5fa;"></i> Badan Amal Rasmi</h2>
+                <p>Organisasi yang diiktiraf dan menerima derma mata wang kripto dengan ketelusan penuh</p>
+            </div>
+            <div class="grid" id="charityGrid"></div>
+        </div>
+
+        <!-- ==================== PAGE: CARA KERJA ==================== -->
+        <div class="page-view" id="page-cara-kerja">
+            <div class="page-header">
+                <h2><i class="fas fa-circle-question" style="color:#a78bfa;"></i> Bagaimana Ia Berfungsi?</h2>
+                <p>Proses mudah & telus untuk menderma menggunakan kripto</p>
+            </div>
+
+            <div class="how-it-works" style="margin-top:0; opacity:1; transform:none;">
+                <div class="steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4><i class="fas fa-building-columns"></i> Pilih Badan Amal</h4>
+                        <p>Pilih organisasi rasmi yang anda percayai daripada senarai kami yang telah disahkan.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4><i class="fas fa-wallet"></i> Sediakan Dompet</h4>
+                        <p>Gunakan dompet kripto anda (MetaMask, Trust Wallet, dll) untuk membuat transaksi.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4><i class="fas fa-paper-plane"></i> Hantar Derma</h4>
+                        <p>Salin alamat dompet rasmi atau gunakan pautan yang disediakan untuk memindahkan dana.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4><i class="fas fa-magnifying-glass-chart"></i> Jejaki Impak</h4>
+                        <p>Semak blockchain untuk mengesahkan transaksi dan lihat laporan ketelusan di portal rasmi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-section" style="margin-top:2rem; opacity:1; transform:none;">
+                <h2 class="section-title"><i class="fas fa-quote-right"></i> Testimoni</h2>
+                <p class="section-subtitle">Apa kata komuniti tentang derma kripto</p>
+                <div class="testimonial">
+                    <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
+                    <q>
+                        Derma kripto membolehkan kami menerima sumbangan dengan lebih pantas dan kos transaksi yang 
+                        lebih rendah berbanding kaedah tradisional. Setiap satoshi membantu kami menyediakan pendidikan 
+                        untuk kanak-kanak yang memerlukan.
+                    </q>
+                    <p class="author">
+                        <i class="fas fa-circle" style="color:#34d399; font-size:0.5rem;"></i> 
+                        Pasukan UNICEF CryptoFund 
+                        <span>• Dana Kripto PBB</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PAGE: SOALAN LAZIM ==================== -->
+        <div class="page-view" id="page-soalan-lazim">
+            <div class="page-header">
+                <h2><i class="fas fa-comments" style="color:#34d399;"></i> Soalan Lazim</h2>
+                <p>Soalan yang sering ditanya tentang derma kripto untuk badan amal kanak-kanak</p>
+            </div>
+            <div class="faq-section" style="margin-top:0; opacity:1; transform:none;">
+                <div class="faq-list" id="faqList">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span><i class="fab fa-bitcoin" style="color:#f7931a; margin-right:8px;"></i> Adakah derma kripto selamat?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <p class="faq-answer">Ya! Semua transaksi direkodkan di blockchain yang bersifat telus dan tidak boleh diubah. Pastikan anda hanya menggunakan alamat dompet rasmi dari portal badan amal yang disahkan.</p>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span><i class="fas fa-hand-holding-dollar" style="color:#60a5fa; margin-right:8px;"></i> Apakah kripto yang diterima?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <p class="faq-answer">Bitcoin (BTC), Ethereum (ETH), USD Coin (USDC), Litecoin (LTC), dan beberapa altcoin lain bergantung kepada badan amal yang dipilih.</p>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span><i class="fas fa-file-invoice" style="color:#34d399; margin-right:8px;"></i> Bolehkah saya dapat resit cukai?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <p class="faq-answer">Kebanyakan badan amal yang disenaraikan menyediakan resit derma untuk tujuan cukai. Sila hubungi organisasi tersebut secara langsung.</p>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span><i class="fas fa-globe-asia" style="color:#a78bfa; margin-right:8px;"></i> Adakah IMF menguruskan derma kripto?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <p class="faq-answer"><strong>Tidak.</strong> IMF tidak menguruskan sebarang derma kripto untuk kanak-kanak. Sila rujuk hanya kepada badan amal yang disenaraikan di atas.</p>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span><i class="fas fa-shield" style="color:#fbbf24; margin-right:8px;"></i> Bagaimana mengelakkan penipuan?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <p class="faq-answer"><strong>PENTING:</strong> Sentiasa sahkan URL portal rasmi sebelum membuat transaksi. Jangan klik pautan daripada e-mel atau mesej yang mencurigakan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // NAVIGATION SYSTEM
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+
+            document.getElementById('btnBack').classList.add('visible');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
+            if (target && typeof gsap !== 'undefined') {
+                gsap.fromTo(target, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4 });
+            }
+        }
+
+        function goHome() {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-home').classList.add('active');
+            document.getElementById('btnBack').classList.remove('visible');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // THREE.JS BACKGROUND ANIMATION
+        const canvas = document.getElementById('three-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 12;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.8);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x60a5fa, 1.2, 30);
+        pointLight.position.set(0, 5, 5);
+        scene.add(pointLight);
+
+        const coins = [];
+        const coinGeometries = [
+            new THREE.TorusGeometry(0.3, 0.12, 16, 16),
+            new THREE.OctahedronGeometry(0.3, 0),
+            new THREE.IcosahedronGeometry(0.25, 0)
+        ];
+
+        for (let i = 0; i < 35; i++) {
+            const geo = coinGeometries[Math.floor(Math.random() * coinGeometries.length)];
+            const material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color().setHSL(Math.random() * 0.15 + 0.55, 0.7, 0.6),
+                specular: 0x444444,
+                shininess: 80,
+                transparent: true,
+                opacity: 0.6,
+            });
+            const coin = new THREE.Mesh(geo, material);
+            coin.position.set((Math.random() - 0.5) * 18, (Math.random() - 0.5) * 14, (Math.random() - 0.5) * 6 - 2);
+            coin.userData = {
+                speedX: (Math.random() - 0.5) * 0.005,
+                speedY: (Math.random() - 0.5) * 0.005,
+                rotSpeedX: (Math.random() - 0.5) * 0.02,
+                rotSpeedY: (Math.random() - 0.5) * 0.02
+            };
+            coins.push(coin);
+            scene.add(coin);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            coins.forEach(coin => {
+                coin.position.x += coin.userData.speedX;
+                coin.position.y += coin.userData.speedY;
+                if (Math.abs(coin.position.x) > 9) coin.position.x *= -0.95;
+                if (Math.abs(coin.position.y) > 7) coin.position.y *= -0.95;
+                coin.rotation.x += coin.userData.rotSpeedX;
+                coin.rotation.y += coin.userData.rotSpeedY;
+            });
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // GSAP ANIMATIONS
+        gsap.to('#navbar', { opacity: 1, y: 0, duration: 0.8 });
+        gsap.to('#heroSection', { opacity: 1, y: 0, duration: 1, delay: 0.2 });
+        gsap.to('#statsBar', { opacity: 1, y: 0, duration: 0.8, delay: 0.4 });
+        gsap.to('#footerNote', { opacity: 1, y: 0, duration: 0.8, delay: 0.6 });
+        gsap.to('#mainFooter', { opacity: 1, y: 0, duration: 0.8, delay: 0.8 });
+
+        // STATS COUNTER
+        document.querySelectorAll('.counter').forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            gsap.to(counter, {
+                innerText: target,
+                duration: 2,
+                snap: { innerText: 1 },
+                onUpdate: function() { counter.textContent = Math.round(counter.innerText); }
+            });
+        });
+
+        // FAQ ACCORDION
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(faq => faq.classList.remove('active'));
+                if (!isActive) item.classList.add('active');
+            });
+        });
+
+        // GENERATE CHARITY CARDS WITH IMAGES
+        document.addEventListener('DOMContentLoaded', function() {
+            const charities = [
+                {
+                    name: 'UNICEF Venture Fund',
+                    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&auto=format&fit=crop',
+                    badge: '<i class="fas fa-circle" style="color:#34d399; font-size:0.5rem;"></i> Pelaburan Teknologi',
+                    description: 'Melabur dalam startup teknologi sumber terbuka untuk pendidikan dan kesejahteraan kanak-kanak. Telus 100% di blockchain.',
+                    crypto: ['₿ Bitcoin', 'Ξ Ether'],
+                    url: 'https://www.unicefventurefund.org/crypto-funding'
+                },
+                {
+                    name: 'UNICEF Australia',
+                    image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop',
+                    badge: '<i class="fas fa-circle" style="color:#34d399; font-size:0.5rem;"></i> Cawangan Rasmi',
+                    description: 'Menerima lebih 50 jenis kripto melalui The Giving Block. 78 sen dari setiap dolar digunakan terus untuk kanak-kanak.',
+                    crypto: ['₿ Bitcoin', 'Ξ Ether', '💲 USDC', '◎ Solana'],
+                    url: 'https://www.unicef.org.au/support-unicef-australia/donate-cryptocurrencies'
+                },
+                {
+                    name: 'Save the Children',
+                    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop',
+                    badge: '<i class="fas fa-circle" style="color:#34d399; font-size:0.5rem;"></i> Inisiatif HODL Hope',
+                    description: 'Inisiatif bantuan kemanusiaan global yang membolehkan anda menderma kripto secara berulang melalui alamat dompet rasmi.',
+                    crypto: ['₿ Bitcoin', 'Ξ Ether', 'Ł Litecoin'],
+                    url: 'https://www.savethechildren.net/donate/donate-cryptocurrency'
+                }
+            ];
+
+            const grid = document.getElementById('charityGrid');
+            if (grid) {
+                grid.innerHTML = charities.map(item => `
+                    <div class="card">
+                        <div class="card-img-wrapper">
+                            <img src="${item.image}" alt="${item.name}" class="card-img" />
+                        </div>
+                        <h3>${item.name}</h3>
+                        <span class="badge">${item.badge}</span>
+                        <p>${item.description}</p>
+                        <div class="crypto-tags">
+                            ${item.crypto.map(c => `<span>${c}</span>`).join('')}
+                        </div>
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn">
+                            <i class="fas fa-external-link-alt"></i> Derma Sekarang
+                        </a>
+                    </div>
+                `).join('');
+            }
+        });
+
+// ============================================================
+// 1. BUTANG CLOSE - BALIK KE INDEX.HTML + MENU=OPEN
+// ============================================================
+document.getElementById('closeBtn').onclick = () => {
+    location.href = 'index.html?menu=open';
+};
+
+// ============================================================
+// 2. BUTANG SHARE - KONGSI PAUTAN + KAD BERGAMBAR
+// ============================================================
+document.getElementById('shareBtn').addEventListener('click', function() {
+    const url = window.location.href;
+    const title = document.title || 'Sumbangan Kripto untuk Kanak-Kanak Sedunia';
+    const text = '🌍 Bantu kanak-kanak melalui derma kripto ke UNICEF!';
+    const image = 'https://raw.githubusercontent.com/Lilmoki91/cryptorian-world-my/refs/heads/main/images/crypto4kids-webp.webp';
+
+    if (navigator.share) {
+        // 🔥 Guna Web Share API (mobile) - dia akan baca meta tags untuk gambar
+        navigator.share({
+            title: title,
+            text: text,
+            url: url
+        }).catch(err => {
+            if (err.name !== 'AbortError') {
+                console.log('Share cancelled');
+            }
+        });
+    } else {
+        // 🔥 Fallback: Salin pautan + tunjuk mesej dengan gambar
+        navigator.clipboard.writeText(url).then(() => {
+            alert('✅ Pautan telah disalin!\n\n📸 Gambar kad: ' + image + '\n\nKongsikan pautan dengan rakan anda!');
+        }).catch(() => {
+            const input = document.createElement('input');
+            input.value = url;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert('✅ Pautan telah disalin!\n\n📸 Gambar kad: ' + image + '\n\nKongsikan pautan dengan rakan anda!');
+        });
+    }
+});
+
+// ============================================================
+// 📤 SHARE DENGAN KAD BERGAMBAR
+// ============================================================
+function shareToSocial(platform) {
+    const url = window.location.href;
+    const title = '🌍 Sumbangan Kripto untuk Masa Depan Anak-Anak Sedunia';
+    const description = 'Bantu kanak-kanak melalui derma kripto terus ke UNICEF. Telus, selamat & pantas!';
+
+    let shareUrl = '';
+
+    switch (platform) {
+        case 'telegram':
+            shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title + '\n\n' + description)}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title + '\n' + description)}&url=${encodeURIComponent(url)}`;
+            break;
+        case 'whatsapp':
+            // 🔥 GUNA wa.me BUKAN api.whatsapp.com
+            shareUrl = `https://wa.me/?text=${encodeURIComponent(title + '\n\n' + description + '\n\n' + url)}`;
+            break;
+        case 'facebook':
+            // 🔥 Facebook auto-detect Open Graph tags
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            break;
+    }
+
+    window.open(shareUrl, '_blank', 'width=600,height=500');
+}
+
+// Native Share (Mobile)
+async function shareNative() {
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: '🌍 Sumbangan Kripto untuk Masa Depan Anak-Anak',
+                text: 'Bantu kanak-kanak melalui derma kripto terus ke UNICEF.',
+                url: window.location.href
+            });
+        } catch (err) {}
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('📋 Pautan disalin ke clipboard!');
+    }
+}
+
+
+// ==============================================
+// 📌 pwa system 📌
+// 🚨 FORCE SERVICE WORKER UPDATE
+// ==============================================
+if ('serviceWorker' in navigator) {
+  // Unregister semua SW lama
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => reg.unregister());
+  });
+
+  // Register SW baru
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => {
+        console.log('✅ SW v2 registered');
+        reg.update();
+
+        if (reg.waiting) {
+          reg.waiting.postMessage('SKIP_WAITING');
+        }
+      })
+      .catch(err => console.log('❌ SW failed:', err));
+  });
+
+  // Reload bila SW baru active
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+ } 
+ 
+ 
+</script>
+</body>
+</html>
